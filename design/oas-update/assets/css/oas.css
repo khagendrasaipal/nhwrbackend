@@ -1,0 +1,1240 @@
+/* This css file is to over write bootstarp css
+--------------------------------------------------------- /
+* Theme Name: OAS Email Template
+* Theme URI: http://sumanshr.com.np/demo/oas
+* Author: Suman Shrestha
+* Author URI: http://sumanshresthaa.com.np
+* Description: A custom Email Template designed and developed for Saipal - OAS by Suman Shrestha.
+* Version: 1.0.0
+* License: GNU General Public License v2 or later
+* License URI: http://www.gnu.org/licenses/gpl-2.0.html
+--------------------------------------------------------- */
+/* 
+
+
+Googel Fonts  */
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,600,700");
+/* Googel Fonts End  */
+
+
+.transition {
+    -webkit-transition: all 0.3s ease;
+    transition: all 0.3s ease; 
+}
+
+body {
+    display: table;
+    font-family: "Open Sans", sans-serif;
+    font-size: 15px;
+    width: 100%; 
+}
+
+p {
+    font-size: 15px;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 400;
+    line-height: 24px;
+    color: #878787; 
+}
+
+p:focus {border: none; outline: 0; }
+
+a, button {
+    text-decoration: none;
+    outline: none !important;
+    color: #878787;
+    -webkit-transition: all 0.25s ease;
+    transition: all 0.25s ease; 
+}
+
+a:hover,
+a:focus {
+    text-decoration: none;
+    color: #000; 
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {margin: 0; }
+
+h5 {font-size: 1em;}
+
+ul,
+ol {padding-left: 0; }
+
+.btn:focus,
+button:focus {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    outline: 0; 
+}
+.btn.disabled, .btn:disabled {cursor: not-allowed; }
+img {max-width: 100%; }
+.modal-header {display: block; }
+.mb-0 {margin-bottom: 0; }
+.pb-0 {padding-bottom: 0; }
+.ov-h {overflow: hidden; }
+
+.btn,
+button,
+input,
+textarea {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    outline: 0 !important; 
+}
+.no-padding {padding: 0 !important; }
+canvas {max-width: 100%; }
+.btn {border-radius: 3px; }
+
+
+
+/*--------------------------------------------------------------
+## CUSTOM MAIN STYLE CSS
+--------------------------------------------------------------*/
+
+aside.left-panel:hover {overflow-x: scroll; }
+.open aside.left-panel:hover {overflow-x: inherit; }
+.small-device .right-panel {margin-left: 83px; }
+
+
+.header {
+    background: #0085fc;
+    padding: 0;
+    height: 40px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    left: 0;
+    right: 0;
+    z-index: 999999;
+}
+.menu-item {
+    float: left;
+    margin-top: 10px;
+}
+.sub-menu {
+  display: none;
+}
+.sub-menu {
+    background: #fff !important;
+    z-index: 6;
+    color: #333;
+    padding: 5px 15px;
+    overflow: hidden;
+    margin-top: 12px;
+    margin-left: 30px;
+    position: absolute;
+    width: 400px;
+    box-shadow: 1px 2px 10px #ddd;
+    border-radius: 10px;
+    max-height: 400px;
+    overflow-y: scroll;
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+.sub-menu ::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.sub-menu  {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.sub-menu li {
+    display: block;
+    width: 200px;
+    clear: both;
+    overflow: hidden;
+    padding: 6px 5px;
+    margin-top: 0px;
+    border-bottom: 1px solid #555;
+}
+.sub-menu li:last-child{
+    border-bottom: none;
+}
+.sub-menu li a{
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+}
+.sub-menu li a:hover{
+    color: #999;
+    text-decoration: none;
+}
+
+.app-menu {
+    display: block;
+    text-align: center;
+    padding: 10px;
+    font-size: 13px;
+}
+.app-menu a .fas, .app-menu a .far, .app-menu a .fab, .app-menu a .fa {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 36px;
+    color: #555;
+}
+
+
+/*--------------------------------------------------------------
+## CUSTOM HEADER LEFT CSS
+--------------------------------------------------------------*/
+
+.header-left {
+    display: inline-block; }
+
+.header-left.open .form-inline {
+    display: block; }
+
+.header-left .dropdown {
+    display: inline-block; 
+}
+.header-left .dropdown .dropdown-toggle {
+    background: transparent;
+    border: none;
+    color: #99abb4;
+    font-size: 16px;
+    line-height: 55px;
+    padding-top: 0;
+    padding-bottom: 0; 
+}
+.header-left .dropdown .dropdown-toggle:after {
+    display: none; 
+}
+.header-left .dropdown .dropdown-toggle .count {
+    border-radius: 50%;
+    color: #fff;
+    font-size: 11px;
+    height: 15px;
+    width: 15px;
+    line-height: 15px;
+    right: 0;
+    top: 12px;
+    position: absolute; 
+}
+.header-left .dropdown .dropdown-toggle:active, .header-left .dropdown .dropdown-toggle:focus, 
+.header-left .dropdown .dropdown-toggle:visited {
+    background: none !important;
+    border-color: transparent !important;
+    color: #292b35 !important; 
+}
+.header-left .dropdown .dropdown-menu {
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    top: 52px !important;
+    left: inherit !important;
+    right: 0 !important;
+    -webkit-box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    line-height: 35px; 
+}
+.header-left .dropdown .dropdown-menu p {
+    font-size: 15px;
+    margin: 0;
+    padding: 5px 15px;
+}
+.header-left .dropdown .dropdown-menu .dropdown-item {
+    color: #99abb4;
+    font-size: 13px;
+    padding: 10px 15px 3px;
+    text-overflow: ellipsis;
+    -webkit-transition: all .25s;
+    transition: all .25s; 
+}
+.header-left .dropdown .dropdown-menu .dropdown-item:hover {
+    background: rgba(233, 236, 239, 0.5); 
+}
+.header-left .dropdown .dropdown-menu .dropdown-item .photo {
+    float: left;
+    margin-right: 15px;
+    width: 25px; 
+}
+.header-left .dropdown .dropdown-menu .dropdown-item .message .name {
+    margin-top: -5px; 
+}
+.header-left .dropdown .dropdown-menu .dropdown-item .message .time {
+    font-size: 11px; 
+}
+.header-left .dropdown .dropdown-menu .dropdown-item .message p {
+    clear: both;
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+    text-overflow: ellipsis; 
+}
+
+
+/*--------------------------------------------------------------
+## CUSTOM HEADER MENU CSS
+--------------------------------------------------------------*/ 
+.header-menu {
+    display: block;
+    float: right;
+    position: relative;
+    width: 100%;
+}
+.dropdown.for-notification {
+    float: left;
+}
+.dropdown.for-message {
+    float: left;
+}
+.header-menu .dropdown {
+    line-height: 55px;
+    margin-top: 0 !important; 
+}
+.header-menu .dropdown .dropdown-toggle {
+    line-height: 55px; 
+}
+
+.user-area .dropdown-toggle {
+    position: relative;
+    z-index: 0; 
+}
+.user-area .dropdown-toggle:before {
+    content: "";
+    position: absolute;
+    right: -3px;
+    bottom: 10px;
+    background: #868e96;
+    width: 11px;
+    height: 11px;
+    border-radius: 100%;
+    border: 2px  solid white;
+    z-index: 1; 
+}
+.user-area .dropdown-toggle.active:before {
+    background: #49a342; 
+}
+.dropdown-menu {
+    border-radius: 0;
+    -webkit-transform: none !important;
+    transform: none !important; 
+}
+
+.info-section {
+    float: right;
+}
+.info-link, .info-icon {
+    float: left;
+    margin-right: 15px;
+}
+.info-section .info-link a{
+    color: #fff;
+    padding-top: 9px;
+    display: inline-block;
+    margin-left: 15px;
+    font-size: 14px;
+    font-weight: 600;
+}
+.info-section .fa, .info-section .far, .info-section .fas, .info-section .fab {
+    color: #fff;
+    font-size: 24px;
+    padding-top: 8px;
+}
+
+.user-area {
+    float: right;
+    padding-right: 0;
+    position: relative;
+    padding-left: 20px; 
+}
+.user-area .user-menu {
+    background: #fff;
+    border: none;
+    left: inherit !important;
+    right: 0;
+    top: 54px !important;
+    margin: 0;
+    max-width: 150px;
+    padding: 5px 10px;
+    position: absolute;
+    width: 100%;
+    z-index: 999;
+    min-width: 150px;
+    -webkit-box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05); 
+}
+.user-area .user-menu .nav-link {
+    color: #607d8b;
+    display: block;
+    font-size: 13px;
+    line-height: 22px;
+    padding: 5px 0; 
+}
+.user-area .user-menu .nav-link > i {
+    margin-right: 10px; 
+}
+.user-area .user-avatar {
+    float: right;
+    width: 40px; 
+}
+.user-area .user-info .name {
+    color: #8c8c8c;
+    font-size: 14px;
+    position: relative;
+    text-transform: uppercase; 
+}
+.user-area .count {
+    background: #d9534f;
+    border-radius: 50%;
+    color: #fff;
+    font-family: 'Open Sans';
+    font-size: 9px;
+    font-weight: 700;
+    float: right;
+    height: 20px;
+    width: 20px;
+    line-height: 20px;
+    text-align: center; 
+}
+.user-area .dropdown-toggle {
+    line-height: 55px;
+    height: 35px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center; 
+}
+.user-area .dropdown-toggle:after {display: none; }
+.user-area .fa, .user-area .far, .user-area .fas, .user-area .fab {
+    color: #fff;
+    font-size: 24px;
+}
+
+
+
+/*--------------------------------------------------------------
+## CUSTOM SEARCH FORM CSS
+--------------------------------------------------------------*/
+.search-form {
+    padding-top: 5px;
+}
+.search-form input {
+    padding: 5px 25px;
+    line-height: 10px;
+    height: 30px;
+    font-size: 13px;
+}
+.search-icon1 .fa {
+    position: absolute;
+    top: 12px;
+    padding-left: 5px;
+    color: #999;
+}
+.search-icon2 .fas {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    padding-right: 5px;
+    color: #999;
+}
+
+
+/*--------------------------------------------------------------
+## CUSTOM STATIC BAR CSS
+--------------------------------------------------------------*/
+.static-bar-section {
+    display: block;
+    background: #f9f9f9;
+    height: 40px;
+    float: left;
+    overflow: hidden;
+    position: fixed;
+    min-width: 100%;
+    margin-top: 40px;
+    border-bottom: 1px solid #ccc;
+    top: 0px;
+    z-index: 99;
+}
+
+.static-menu {
+    background: #f5f5f5;
+    display: block;
+    position: fixed;
+    float: left;
+    width: 40px;
+    height: 100vh;
+    top: 6.5%;
+    text-align: center;
+    z-index: 999999;
+    border-right: 1px solid #ddd;
+}
+.static-lists li {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    list-style: none;
+}
+.static-lists li.active a, .static-lists a:hover  {
+    color: #0085fc;
+}
+.static-lists a {
+    font-size: 22px;
+}
+.navbar-header .fas {
+    color: #fff;
+    font-size: 18px;
+}
+
+nav.navbar.navbar-expand-sm.navbar-default {
+  background: #f8f9fa;
+  width: 100%;
+  padding: 5px;
+}
+.navbar .main-menu{width: 100%;}
+.toggle-navigation {margin-left: 45px;}
+.mailbox-controls {
+    margin-left: 10px; margin-top: 5px;
+}
+.mailbox-controls .pagination {
+    margin-top: 3px;
+}
+.mailbox-controls button:hover {
+    color: #069;
+}
+
+
+
+
+/*--------------------------------------------------------------
+## CUSTOM LEFT PANEL CSS
+--------------------------------------------------------------*/
+aside.left-panel {
+    background: #f8f9fa;
+    display: block;
+    overflow-y:scroll;
+    overflow-x:scroll;
+    float: left;
+    width: 16%;
+    margin-left: 40px;
+    position: fixed;
+    z-index: 9;
+    top: 80px;
+    border-right: 1px solid #ddd;
+    height: 90%;
+}
+
+
+
+/*--------------------------------------------------------------
+## CUSTOM OPEN NAVBAR CSS
+--------------------------------------------------------------*/
+
+.open .navbar .navbar-brand.hidden {display: block; }
+.open .sub-menu .subtitle {
+    display: block;
+    font-size: 15px;
+    line-height: 35px;
+    color: #607d8b;
+    border-bottom: 1px solid rgba(96, 125, 139, 0.15); 
+}
+.open .sub-menu i {left: 15px !important; }
+
+.sub-menu .subtitle {display: none; }
+.sub-menu .subtitle > .menu-icon {display: none; }
+
+.open aside.left-panel {
+    max-width: 50px;
+    width: 50px; 
+}
+.open aside.left-panel .navbar .navbar-header {padding: 0; }
+.open aside.left-panel .navbar .navbar-brand {display: none; }
+.open aside.left-panel .navbar .navbar-brand.hidden {
+    display: block !important;
+    text-align: center;
+    width: 100%; 
+}
+.open aside.left-panel .navbar .navbar-brand.hidden img {
+    max-width: 100%;
+    margin: 0 auto; 
+}
+.open aside.left-panel .navbar .navbar-brand.d-md-none {
+    display: block !important;
+    margin: 13px 0 0;
+    min-height: 67px;
+    padding: 0;
+    text-align: center; 
+}
+.open aside.left-panel .navbar .navbar-nav:before {display: none !important; }
+.open aside.left-panel .navbar .navbar-nav li {position: relative; padding: 0 15px; }
+.open aside.left-panel .navbar .navbar-nav li a {
+    font-size: 0;
+    z-index: 0;
+    -webkit-transition: none;
+    transition: none; 
+}
+.open aside.left-panel .navbar .navbar-nav li a .menu-icon {
+    font-size: 20px;
+    z-index: -1;
+    text-align: center;
+    width: inherit; 
+}
+.open aside.left-panel .navbar .navbar-nav li a .menu-title-text {font-size: 0; }
+.open aside.left-panel .navbar .navbar-nav li a .badge {display: none; }
+.open aside.left-panel .navbar .navbar-nav li > a {max-width: 60px; padding-left: 0; }
+.open aside.left-panel .navbar .navbar-nav li.menu-item-has-children {overflow: hidden; }
+.open aside.left-panel .navbar .navbar-nav li.menu-item-has-children ul {padding-left: 0; }
+.open aside.left-panel .navbar .navbar-nav li.menu-item-has-children .sub-menu {
+    display: block;
+    left: 83px;
+    top: 0; 
+}
+.open aside.left-panel .navbar .navbar-nav li.menu-item-has-children .sub-menu li a {
+    display: block;
+    font-size: 14px;
+    max-width: inherit;
+    padding: 2px 15px 2px 25px;
+    width: 100%; 
+}
+.open aside.left-panel .navbar .navbar-nav li.menu-item-has-children .sub-menu li a .menu-icon {
+    text-align: center; 
+}
+.open aside.left-panel .navbar .navbar-nav li.menu-item-has-children.show {overflow: visible; }
+.open aside.left-panel .navbar .navbar-nav li.menu-item-has-children.show .sub-menu {
+    position: absolute !important;
+    width: 180px;
+    -webkit-box-shadow: 1px 0 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 1px 0 20px rgba(0, 0, 0, 0.08); 
+}
+.open aside.left-panel .navbar .navbar-nav li span.count {
+    display: none;
+    margin-right: 5px;
+    z-index: 1; 
+}
+.open aside.left-panel .navbar .navbar-nav li.active a:after {
+    content: '';
+    display: none; 
+}
+.open aside.left-panel .navbar .navbar-nav .menu-title {
+    font-size: 0;
+    line-height: 0;
+    opacity: 0;
+    padding: 0; 
+}
+.open aside.left-panel .menutoggle {
+    background-color: #dc3545;
+    color: #fff !important;
+    right: -20px;
+    text-align: center; 
+}
+
+
+
+/*--------------------------------------------------------------
+## CUSTOM ACCORDIAN MENU PANEL CSS
+--------------------------------------------------------------*/
+#accordion {
+    width: 100%;
+    padding: 15px 0px;
+}
+#accordion .panel {
+  border-radius: 0;
+  border: 0;
+  margin-top: 0px;
+  margin-bottom: 20px;
+}
+#accordion a {
+  display: block;
+  text-decoration: none;
+}
+#accordion .panel-heading a.collapsed:hover,
+#accordion .panel-heading a.collapsed:focus {
+  background-color: transparent;
+  color: #333;
+  transition: all 0.2s ease-in;
+}
+#accordion .panel-heading a.collapsed:hover::before,
+#accordion .panel-heading a.collapsed:focus::before {
+  color: #222;
+}
+#accordion .panel-heading {
+  padding: 0;
+  border-radius: 0px;
+  text-align: left;
+  margin-bottom: 10px;
+}
+#accordion .panel-title {
+    font-size: 16px;
+    font-weight: 700;
+}
+#accordion .panel-title a .fas, #accordion .panel-title a .far, #accordion .panel-title a .fab {
+    padding-right: 10px;
+}
+#accordion .panel-body {
+    margin-left: 5px;
+    margin-bottom: 20px;
+}
+#accordion .panel-heading a:not(.collapsed) {
+  color: #444;
+  background-color: transparent;
+  transition: all 0.2s ease-in;
+}
+.panel-collapse.collapse.show {
+    margin-bottom: 5px;
+}
+
+/* Add Indicator fontawesome icon to the left */
+#accordion .panel-heading .accordion-toggle::after {
+  font-family: 'FontAwesome';
+  content: '\f107';
+  float: right;
+  color: #333;
+  font-weight: lighter;
+  margin-right: 0px;
+  transform: rotate(0deg);
+  transition: all 0.2s ease-in;
+}
+#accordion .panel-heading .accordion-toggle.collapsed::after {
+  color: #444;
+  transform: rotate(-90deg);
+  transition: all 0.2s ease-in;
+}
+
+#accordion .panel-body li {
+    list-style: none;
+    border-bottom: 1px solid #fff;
+}
+#accordion .panel-body li a {
+    font-size: 13px;
+    font-weight: 600;
+    display: block;
+    padding: 3px 0;
+}
+
+
+
+/*--------------------------------------------------------------
+## CUSTOM RIGHT PANEL CSS
+--------------------------------------------------------------*/
+.right-panel header.header {
+    background: #0085fc;
+    border-bottom: 1px solid #0085fc;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    clear: both;
+    padding: 0 30px;
+    height: 55px;
+    position: fixed;
+    left: 280px;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 999; 
+}
+.right-panel .navbar-brand {width: 250px; display: inline-block; }
+.right-panel .menutoggle {padding-top: 7px; }
+.right-panel .navbar-header {
+    width: 100%;
+    background-color: #0085fc;
+    padding: 0 1.25em 0 0; 
+}
+.right-panel .navbar-header > a {display: inline-block; }
+.right-panel .navbar-brand {line-height: 42px; }
+.right-panel .navbar-brand img {max-width: 145px; }
+.right-panel .navbar-brand.hidden {display: none; }
+.top-left .navbar-header .navbar-brand {
+    font-weight: 900;
+    color: #fff;
+    margin-left: 20px;
+    font-size: 9px;
+    display: block;
+}
+.open .right-panel {margin-left: -15px; width: 94%; }
+.open .let-panel {z-index: 999; }
+
+.menutoggle {
+    background-color: transparent;
+    color: #99abb4 !important;
+    cursor: pointer;
+    float: left;
+    font-size: 1em;
+    height: 40px;
+    line-height: 40px;
+    width: 40px;
+    display: block;
+    text-align: center; 
+}
+#menuToggle2 {padding-left: 25px; }
+
+
+/*--------------------------------------------------------------
+## CUSTOM RIGHT PANEL CSS
+--------------------------------------------------------------*/
+.right-panel {
+    background: #fff;
+    min-width: 83%;
+    float: right;
+    position: relative;
+    display: block;
+    height: 100vh;
+}
+.right-panel .top-left {
+    width: 350px;
+    float: left; 
+}
+.right-panel .top-rigth {
+    float: left; 
+}
+.right-panel .breadcrumbs {
+    float: left;
+    margin-top: 30px;
+    padding: 0 1.875em;
+    width: 100%; 
+}
+.right-panel .breadcrumbs .breadcrumbs-inner {
+    background-color: #fff; 
+}
+.right-panel .breadcrumbs .col-lg-8 .page-header {
+    float: left; 
+}
+.right-panel .page-header {
+    min-height: 50px;
+    margin: 0px;
+    padding: 0px 15px;
+    background: #ffffff;
+    border-bottom: 0px; 
+}
+.right-panel .page-header h1 {
+    font-size: 18px;
+    padding: 15px 0; 
+}
+.right-panel .page-header .breadcrumb {
+    margin: 0px;
+    padding: 13.5px 0;
+    background: #fff;
+    text-transform: capitalize;
+}
+.right-panel .page-header .breadcrumb > li + li:before {
+    padding: 0 5px;
+    color: #ccc;
+    content: "/\00a0"; 
+}
+
+/*--------------------------------------------------------------
+## CUSTOM RIGHT PANEL ADDITIONAL CSS
+--------------------------------------------------------------*/
+
+.content {
+    float: left;
+    padding: 0px 0px 0px 15px;
+    width: 100%;
+    height: 80vh;
+    min-height: 450px;
+    position: relative;
+    margin-top: 90px;
+}
+
+.action-menu .dropdown-toggle i {font-size: 12px; }
+.action-menu .dropdown-toggle::after {display: none; }
+
+
+
+/*--------------------------------------------------------------
+## CUSTOM NAV TABS CSS
+--------------------------------------------------------------*/
+.content .nav-tabs {
+    background: #f8f9fa;
+}
+.content .nav-tabs li a {
+    margin: 5px 10px 5px 10px;
+    display: inline-block;
+    padding: 5px;
+    color: #333;
+    font-size: 13px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+.content .nav-tabs li.active, .content .nav-tabs li a: hover{
+    background: #fff;
+}
+
+
+/*--------------------------------------------------------------
+## CUSTOM PAGINATION CSS
+--------------------------------------------------------------*/
+.pagination.oas-paginate {
+    margin-top: 7px;
+    margin-right: 15px;
+}
+.oas-paginate a {
+    border: 1px solid #999;
+    padding: 2px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+}
+.oas-paginate li.active a, .oas-paginate li a:hover {
+    color: #0085fc;
+    font-weight: 600;
+}
+
+
+
+/*--------------------------------------------------------------
+## CUSTOM EMAIL POPUP CSS
+--------------------------------------------------------------*/
+.oas-forms .modal-title {
+    float: left;
+    font-weight: 900;
+    font-size: 15px;
+    text-transform: uppercase;
+    margin-top: 10px;
+}
+.oas-forms .modal-body{background: #eee;}
+.email-body input.form-control {
+    font-size: 13px;
+    font-weight: 600;
+}
+.btn.btn-default.btn-file {
+    float: left;
+    font-size: 13px;
+}
+.help-block {
+    font-size: 13px;
+    padding-top: 8px;
+    color: #0085fc;
+}
+.email-footer button {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+
+
+
+
+
+
+/*--------------------------------------------------------------
+## CUSTOM FOOTER BLOCK CSS
+--------------------------------------------------------------*/
+footer.site-footer {
+    position: fixed;
+    bottom: 0;
+    left: 21%;
+    right: 0;
+    width: 78%;
+    /* background: #ddd; */
+    overflow: hidden;
+    clear: both;
+    padding: 5px;
+    z-index: 99;
+}
+footer.site-footer .footer-inner a {
+    color: #6a7074; 
+}
+
+
+
+/*--------------------------------------------------------------
+## CUSTOM ADDITIONAL CSS
+--------------------------------------------------------------*/
+
+#oas_reading {
+    padding: 40px !important;
+    position: relative;
+    float: right;
+    width: 82%;
+    display: block;
+    background: #fff;
+}
+.open .right-panel #oas_reading {
+    width: 100% !important;
+}
+.reading-header {
+    display: block;
+    clear: both;
+    border-bottom: 1px solid #999;
+    padding: 15px 0px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+.reading-header .modal-title {
+    font-size: 26px;
+    font-weight: 900;
+    float: left;
+}
+.reading-header button {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+.reading-body {
+    display: block;
+    clear: both;
+    overflow: hidden;
+    position: relative;
+}
+.reading-body .row {
+    border-bottom: 1px solid #999;
+    padding: 8px 2px 2px;
+}
+.email-body p {
+    color: #101010;
+    letter-spacing: 0.3px;
+    line-height: 170%;
+}
+
+.new-message {float: left;}
+.mr-0{margin-right: 0px !important; padding-right: 0px !important;}
+.btn-bars {
+    background: #0085fc;
+    border: none;
+    color: #fff;
+    font-size: 13px;
+    padding: 4px 13px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+.btn-bars:hover{ background: #0e60a9; text-decoration: none;}
+.btn-email {
+    position: fixed;
+    bottom: 10%;
+    right: 2%;
+    background: #bde4ff;
+    color: #0085fc;
+    border-radius: 50%; 
+    padding: 15px 20px;
+}
+
+.dashboard-heading {
+    padding: 10px 5px;
+}
+.dashboard-heading a {
+    font-size: 16px;
+    font-weight: 600;
+    color: #555;
+}
+.dashboard-heading a .fas {
+    padding-right: 10px;
+}
+.dashboard-heading a.active {    
+    color: #0085fc;
+}
+
+
+
+.open aside.left-panel .dashboard-heading {
+    padding: 10px 5px 0px;
+}
+.open aside.left-panel .dashboard-heading a, .open aside.left-panel .dashboard-heading a.active {
+    font-size: 0; padding: 0px;
+}
+.open aside.left-panel .dashboard-heading a .fas {
+    font-size: 20px;
+    padding-left: 8px;
+}
+.open aside.left-panel .panel-title a {
+    font-size: 0;
+}
+.open aside.left-panel .panel-title a .fas, .open aside.left-panel .panel-title a .far, 
+.open aside.left-panel .panel-title a .fab {
+    font-size: 20px;
+    padding-left: 8px;
+}
+.open aside.left-panel #accordion {
+    padding: 15px 0;
+}
+
+.open aside.left-panel .panel-body {
+    margin-left: 0px !important;
+}
+.open aside.left-panel .panel-body li a {
+    font-size: 0px !important;
+}
+.open aside.left-panel .panel-body li a .far, .open aside.left-panel .panel-body li a .fas, 
+.open aside.left-panel .panel-body li a .fab{
+    font-size: 15px !important;
+    padding-left: 12px;
+}
+
+
+.static-menu.innerpage {
+    top: 6.4%;
+}
+
+aside.left-panel.innerpage{top: 4.3% !important; padding-top: 5px;}
+aside.left-panel.innerpage .toggle-navigation {
+    margin-left: 0;
+    display: block;
+    clear: both;
+    width: 100%;
+}
+aside.left-panel.innerpage .menutoggle {
+    text-align: left !important;
+    float: left;
+    margin-left: 3px !important;
+    position: relative;
+    padding: 0px 12px;
+    font-size: 20px;
+    margin-bottom: 15px;
+    display: block;
+    clear: both;
+    width: 100%;
+}
+.open aside.left-panel.innerpage .menutoggle {
+    background-color: transparent; 
+    color: #666 !important;
+    right: 0px;
+    text-align: left;
+}
+
+.right-panel.innerpage .content{top: 5% !important; margin-top: 0px;}
+
+/*right panel content columns equal heights*/
+.col-equalheight {
+    display: block;
+    position: relative;
+    padding: 15px;
+    max-height: 430px;
+    overflow-y: scroll;
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+.col-equalheight ::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.col-equalheight  {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/*right panel columns*/
+.col-one {
+    float: left;
+    width: 49%;
+    margin-right: .5%;
+}
+.col-two {
+    float: left;
+    width: 49%;
+    margin-left: .5%;
+}
+
+/*right panel content heading*/
+.content h1 {
+    font-size: 28px;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin: 15px 0px;
+}
+.content h3 {
+    font-size: 24px;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin: 15px 0px;
+}
+.content h3 {
+    font-size: 18px;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin: 15px 0px;
+}
+.content h4 {
+    font-size: 16px;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin: 15px 0px;
+}
+.content h5 {
+    font-size: 14px;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin: 15px 0px;
+}
+.content h6 {
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin: 15px 0px;
+}
+
+
+/*Hide Srollbar in browser*/
+html {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+::-webkit-scrollbar {
+    width: 0;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+    background: #f8f8f8;
+}
+
+
+
+/* media query for 1920 x 1080 resolution */
+@media (max-width:1920px){
+    .top-left .navbar-header .navbar-brand {font-size: 15px; padding: 0px;}
+    .col-equalheight{max-height: 940px;}
+    .static-menu.innerpage {top: 3.7%;}
+}
+
+/* media query for 1600 x 900 resolution */
+@media (max-width:1600px){
+    .top-left .navbar-header .navbar-brand {font-size: 11px; padding-top: 3px;}
+    .col-equalheight{max-height: 780px;}
+    .static-menu.innerpage {top: 4.4%;}
+}
+
+/* media query for 1536 x 864 resolution */
+@media (max-width:1536px){
+    .top-left .navbar-header .navbar-brand {font-size: 9px; padding-top: 5px;}
+    .col-equalheight{max-height: 750px;}
+    .static-menu.innerpage {top: 4.6%;}
+}
+
+/* media query for 1440 x 900 resolution */
+@media (max-width:1440px){
+    .top-left .navbar-header .navbar-brand {font-size: 9px; padding-top: 5px;}
+    .col-equalheight{max-height: 790px;}
+    .static-menu.innerpage {top: 4.5%;}
+}
+
+/* media query for 1366 x 768 resolution */
+@media (max-width:1366px){
+    .top-left .navbar-header .navbar-brand {font-size: 9px; padding-top: 5px;}
+    .col-equalheight{max-height: 550px;}
+    .static-menu.innerpage {top: 6.4%;}
+}
+
+/* media query for 1280 x 720 resolution */
+@media (max-width:1280px){
+    .top-left .navbar-header .navbar-brand {font-size: 7px;}
+    .col-equalheight{max-height: 500px;}
+    .static-menu.innerpage {top: 6.9%;}
+}
+
+/* media query for 1080 x 768 resolution */
+@media (max-width:1080px){
+    .top-left .navbar-header .navbar-brand {font-size: 6px;}
+    .col-equalheight{max-height: 670px;}
+}
+
+
+/* media query for 1024 x 768 resolution */
+@media (max-width:1024px){
+    .top-left .navbar-header .navbar-brand {font-size: 6px;}
+    .col-equalheight{max-height: 500px;}
+    .col-one{width: 100%; margin: 0px 0px 30px 0px; padding-left: 25px;}
+    .col-two{width: 100%; margin: 0px 0px 30px 0px; padding-left: 25px;}
+}

@@ -1,0 +1,19 @@
+{
+	"properties": [
+		{
+			"name": "oas",
+			"type": "java.lang.String",
+			"description": "Extra mongo db configuration"
+		},
+		{
+			"name": "oas.datasource",
+			"type": "java.lang.String",
+			"description": "Datasource"
+		},
+		{
+			"name": "oas.datasource.mongouri",
+			"type": "java.lang.String",
+			"description": "Connection url for mongo DB."
+		}
+	]
+}

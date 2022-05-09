@@ -1,0 +1,25 @@
+server:
+  port: 8091
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost/health_registry
+    username: root
+    password: root
+  jpa:    database-platform: org.hibernate.dialect.MySQL8Dialect
+  data:
+    mongodb:
+      uri: mongodb://root:root@10.10.10.2:27017/mongofileserver
+  servlet:
+    multipart:
+      max-file-size: 256MB
+      max-request-size: 256MB
+      enabled: true
+      
+oas:
+  datasource:
+    mongoUri: mongodb://root:root@10.10.10.2:27017/oas
+    
+oascentral:
+  client_id: devinstance
+  client_secret: devinstance
