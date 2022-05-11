@@ -149,9 +149,9 @@ public class OfficeService extends AutoService{
 	
 	public ResponseEntity<Map<String, Object>> getTreeStructure() {
 		String orgid=request("orgid");
-		
-		String sql = "select tbl_darbandi.id,tbl_darbandi.post, cast(workforce_id as CHAR) as workforceid,tbl_darbandi.orgid as orgidint,hfregistry.hf_name,tbl_samuha.namenp as officenamenp,tbl_upasamuha.namenp as officenameen,tbl_post.namenp as postname from tbl_darbandi left join hfregistry on hfregistry.id=tbl_darbandi.orgid join tbl_samuha on tbl_samuha.id=tbl_darbandi.groupid left join tbl_upasamuha on tbl_upasamuha.id=tbl_darbandi.subgroupid join tbl_post on tbl_post.id=tbl_darbandi.post where  tbl_darbandi.orgid=? or workforce_id=?";
-		List<Tuple> ofcstr = db.getResultList(sql, Arrays.asList(orgid,orgid));
+//		System.out.println(orgid);
+		String sql = "select tbl_darbandi.id,tbl_darbandi.post, cast(workforce_id as CHAR) as workforceid,tbl_darbandi.orgid as orgidint,hfregistry.hf_name,tbl_samuha.namenp as officenamenp,tbl_upasamuha.namenp as officenameen,tbl_post.namenp as postname from tbl_darbandi left join hfregistry on hfregistry.id=tbl_darbandi.orgid join tbl_samuha on tbl_samuha.id=tbl_darbandi.groupid left join tbl_upasamuha on tbl_upasamuha.id=tbl_darbandi.subgroupid join tbl_post on tbl_post.id=tbl_darbandi.post where  tbl_darbandi.workforce_id=?";
+		List<Tuple> ofcstr = db.getResultList(sql, Arrays.asList(orgid));
 		List<Map<String, Object>> list = new ArrayList<>();
 		if (!ofcstr.isEmpty()) {
 			for (Tuple t : ofcstr) {
@@ -171,7 +171,8 @@ public class OfficeService extends AutoService{
 			return Messenger.getMessenger().setData(list).success();
 
 		} else {
-			return Messenger.getMessenger().error();
+			return Messenger.getMessenger().setData(list).success();
+//			return Messenger.getMessenger().error();
 		}
 	}
 
