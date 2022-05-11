@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost/health_registry
+    url: jdbc:mysql://10.10.10.9/health_registry
     username: root
     password: root
   jpa:    database-platform: org.hibernate.dialect.MySQL8Dialect
