@@ -22,7 +22,7 @@ public class Registration {
 	public int status = 2;
 	
 	public String municipality; //NOT REQUIRED IN CERTAIN CASES
-	public int orgid = 666666; 
+	public int orgid = 10546; 
 	
 	
 	
@@ -38,6 +38,11 @@ public class Registration {
 			}
 		}
 	}
+	
+	public static List<String> searchables() {
+		return Arrays.asList("users.username","users.email");
+	}
+	
 
 	public static Map<String, String> rules() {
 		Map<String, String> rules = new HashMap<>();
