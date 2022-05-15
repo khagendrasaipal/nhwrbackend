@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Tuple;
+
 import org.saipal.fmisutil.auth.Authenticated;
 import org.saipal.fmisutil.service.AutoService;
 import org.saipal.fmisutil.util.DB;
@@ -13,6 +15,7 @@ import org.saipal.fmisutil.util.Paginator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,6 +26,9 @@ public class RegistrationService extends AutoService {
 
 	@Autowired
 	Authenticated auth;
+	
+	@Autowired
+	PasswordEncoder pe;
 	
 	private String table = "users";
 	
@@ -72,6 +78,7 @@ public class RegistrationService extends AutoService {
 	}
 	
 	
+	
 	public ResponseEntity<Map<String, Object>> changePassword(String id){
 		DbResponse rowEffect;
 		Registration model = new Registration();
@@ -90,6 +97,34 @@ public class RegistrationService extends AutoService {
 	}
 	
 	
+	public ResponseEntity<Map<String, Object>> changePasswordSelf(String id){
+		String opassword = request("opassword");
+		String password = request("password");
+		String rpassword = request("rpassword");
+		if(opassword.isBlank() || password.isBlank()|| rpassword.isBlank()) {
+			return Messenger.getMessenger().setMessage("All Fields are required.").error();
+		}
+		if(!password.equals(rpassword)) {
+			return Messenger.getMessenger().setMessage("Password and Confirm password does not match.").error();
+		}
+		
+		Tuple t = db.getSingleResult("select password from users where id=?",Arrays.asList(id));
+		if(t!=null) {
+			String encPass = t.get("password")+"";
+			if(pe.matches(request("opassword"), encPass)) {
+				DbResponse rowEffect;
+				String sql = "UPDATE users set password=? where id=?";
+				rowEffect = db.execute(sql,Arrays.asList(pe.encode(password),id));
+				if (rowEffect.getErrorNumber() == 0) {
+					return Messenger.getMessenger().success();
+				}
+			}else {
+				return Messenger.getMessenger().setMessage("Old password does not match.").error();
+			}
+		}
+		return Messenger.getMessenger().setMessage("No such User exists.").error();
+	}
+	
 
 	
 	
@@ -102,7 +137,7 @@ public class RegistrationService extends AutoService {
 		Registration model = new Registration();
 		model.loadData(document);
 		sql = "INSERT INTO users (username,password,status,surname,firstName, email, mobile, role, province, district, municipality, orgid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-		DbResponse rowEffect = db.execute(sql, Arrays.asList(model.username, new BCryptPasswordEncoder().encode(model.password), model.status,model.surname, model.firstname, model.email, model.mobile,
+		DbResponse rowEffect = db.execute(sql, Arrays.asList(model.username, pe.encode(model.password), model.status,model.surname, model.firstname, model.email, model.mobile,
 				model.role, model.province, model.district, model.municipality, model.orgid));
 		
 		if (rowEffect.getErrorNumber() == 0) {

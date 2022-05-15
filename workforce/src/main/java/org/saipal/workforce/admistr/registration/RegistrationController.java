@@ -40,9 +40,14 @@ public class RegistrationController {
 		}
 	}
 	
+	@PutMapping("/change-pasword-self/{id}")
+	public ResponseEntity<Map<String, Object>> changePasswordSelf(HttpServletRequest request,@PathVariable String id) {
+//		System.out.println("change Password Self"+ id);
+		return registrationService.changePasswordSelf(id);
+	}
+	
 	@PutMapping("/change-paasword/{id}")
 	public ResponseEntity<Map<String, Object>> changePassword(HttpServletRequest request,@PathVariable String id) {
-		System.out.println(id);
 		return registrationService.changePassword(id);
 	}
 	
