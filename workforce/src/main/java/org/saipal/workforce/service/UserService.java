@@ -67,11 +67,11 @@ public class UserService extends SuperService {
 		Map<String, Object> data = new HashMap<>();
 		List<User> users = new ArrayList<>();
 
-		String sql = "select id as uid,username as loginname, password,id as orgid from users where username=?";
+		String sql = "select id as uid,username as loginname, password,orgid,role from users where username=?";
 		List<Tuple> tList = db.getResultList(sql,Arrays.asList(username));
 		tList.forEach((t) -> {
 			if (en.matches(password, t.get("password") + "")) {
-				users.add(new User(t.get("uid") + "", t.get("loginname") + "", t.get("password") + "", t.get("orgid") + ""));
+				users.add(new User(t.get("uid") + "", t.get("loginname") + "", t.get("password") + "", t.get("orgid") + "",t.get("role") + ""));
 			}
 		});
 		if (users.size() > 1) {
@@ -114,7 +114,7 @@ public class UserService extends SuperService {
 //				+ " inner join organization as ot on u.orgid=ot.id "
 //				+ " where u.id=" + userid +" ";
 		
-		String query = "select username as loginname,u.id as empid,u.id as orgid,u.id as adminid,u.id as adminlevel,"
+		String query = "select username as loginname,u.id as empid,u.orgid,u.role,u.id as adminid,u.id as adminlevel,"
 				+ " u.username as orgname from users as u "
 				+ " where u.id=" + userid +" ";
 		
@@ -126,6 +126,7 @@ public class UserService extends SuperService {
 		map.put("adminlevel", record.get("adminlevel").toString());
 		map.put("adminid", record.get("adminid").toString());
 		map.put("orgid", record.get("orgid").toString());
+		map.put("role", record.get("role").toString());
 //		map.put("darbandiid", record.get("darbandiid").toString());
 //		map.put("officeid", record.get("officeid").toString());
 		//map.put("fiscalyear", record.get("fiscalyear").toString());
@@ -174,7 +175,7 @@ public class UserService extends SuperService {
 			data.put("message", "User not found for given username");
 		} else {
 			data.put("user", new User(tList.get(0).get("uid") + "", tList.get(0).get("loginname") + "",
-					tList.get(0).get("password") + "",tList.get(0).get("orgid") + ""));
+					tList.get(0).get("password") + "",tList.get(0).get("orgid") + ""," "));
 		}
 		return data;
 
@@ -194,7 +195,7 @@ public class UserService extends SuperService {
 		List<Tuple> tList = db.getResultList(sql,Arrays.asList(username,projectId));
 		tList.forEach((t) -> {
 			if (en.matches(password, t.get("password") + "")) {
-				users.add(new User(t.get("uid") + "", t.get("loginname") + "", t.get("password") + "",t.get("orgid") + ""));
+				users.add(new User(t.get("uid") + "", t.get("loginname") + "", t.get("password") + "",t.get("orgid") + "",""));
 			}
 		});
 		if (users.size() > 1) {

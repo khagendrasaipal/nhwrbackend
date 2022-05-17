@@ -37,6 +37,7 @@ public class LevelService extends AutoService {
 			condition = condition.substring(0, condition.length() - 3);
 			condition += ")";
 		}
+		condition += " and created_by= "+auth.getUserId()+ " ";
 		if (!condition.isBlank()) {
 			condition = " where 1=1 " + condition;
 		}
@@ -64,9 +65,9 @@ public class LevelService extends AutoService {
 		String sql = "";
 		Level model = new Level();
 		model.loadData(document);
-		sql = "INSERT INTO tbl_level (nameen,namenp,status) VALUES (?,?,?)";
+		sql = "INSERT INTO tbl_level (nameen,namenp,status,created_by) VALUES (?,?,?,?)";
 		DbResponse rowEffect = db.execute(sql,
-				Arrays.asList(model.nameen, model.namenp,model.status));
+				Arrays.asList(model.nameen, model.namenp,model.status,auth.getUserId()));
 		if (rowEffect.getErrorNumber() == 0) {
 			return Messenger.getMessenger().success();
 

@@ -71,7 +71,7 @@ public class AuthService extends AutoService {
 
 		tList.forEach((t) -> {
 			if (passwordEncoder.matches(password, t.get("password") + "")) {
-				users.add(new User(t.get("uid") + "", t.get("loginname") + "", t.get("password") + "",t.get("orgid") + ""));
+				users.add(new User(t.get("uid") + "", t.get("loginname") + "", t.get("password") + "",t.get("orgid") + "",""));
 			}
 		});
 

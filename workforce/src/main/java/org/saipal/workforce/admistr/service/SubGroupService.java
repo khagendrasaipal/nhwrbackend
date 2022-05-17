@@ -41,6 +41,7 @@ public class SubGroupService extends AutoService {
 			condition = condition.substring(0, condition.length() - 3);
 			condition += ")";
 		}
+		condition += " and created_by= "+auth.getUserId()+ " ";
 		if (!condition.isBlank()) {
 			condition = " where 1=1 " + condition;
 		}
@@ -68,9 +69,9 @@ public class SubGroupService extends AutoService {
 		String sql = "";
 		SubGroup model = new SubGroup();
 		model.loadData(document);
-		sql = "INSERT INTO tbl_upasamuha (samuha,nameen,namenp,status) VALUES (?,?,?,?)";
+		sql = "INSERT INTO tbl_upasamuha (samuha,nameen,namenp,status,created_by) VALUES (?,?,?,?,?)";
 		DbResponse rowEffect = db.execute(sql,
-				Arrays.asList(model.samuha,model.nameen, model.namenp,model.status));
+				Arrays.asList(model.samuha,model.nameen, model.namenp,model.status,auth.getUserId()));
 		if (rowEffect.getErrorNumber() == 0) {
 			return Messenger.getMessenger().success();
 
@@ -426,8 +427,15 @@ public class SubGroupService extends AutoService {
 	}
 
 	public ResponseEntity<Map<String, Object>> getorgs() {
-		String sql = "select cast(tbl_workforce.id as char) as id, tbl_workforce.org,tbl_workforce.orgname,hfregistry.hf_name,hfregistry.hf_code from tbl_workforce left join hfregistry on hfregistry.id=tbl_workforce.org where 1=?";
-		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(1));
+//		System.out.println(session("role"));
+		String sql="";
+		if(session("role").equals("superuser")) {
+			 sql = "select cast(tbl_workforce.id as char) as id, tbl_workforce.org,tbl_workforce.orgname,hfregistry.hf_name,hfregistry.hf_code from tbl_workforce left join hfregistry on hfregistry.id=tbl_workforce.org where 1=?";
+		}else {
+			 sql = "select cast(tbl_workforce.id as char) as id, tbl_workforce.org,tbl_workforce.orgname,hfregistry.hf_name,hfregistry.hf_code from tbl_workforce left join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.created_by=?";
+		}
+		
+		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(auth.getUserId()));
 		
 //		String sql1 = "select tbl_workforce.orgname,cast(tbl_workforce.id as char) as id from tbl_workforce  where 1=? and org=?";
 //		List<Tuple> admlvl1 = db.getResultList(sql1, Arrays.asList(1,0));

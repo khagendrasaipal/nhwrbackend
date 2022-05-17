@@ -38,7 +38,7 @@ public class Workforce {
 	}
 
 	public static List<String> searchables() {
-		return Arrays.asList("provinceid", "org");
+		return Arrays.asList("org","hfregistry.hf_name","orgname");
 	}
 
 	public static Map<String, String> rules() {

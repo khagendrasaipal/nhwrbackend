@@ -70,7 +70,7 @@ public class WorkforceController {
 	
 	@GetMapping("/downloadcsv")
 	public void getward(HttpServletResponse response,HttpServletRequest request) throws IOException {
-		System.out.println("upto here");
+		
 		 WorkforceService.getcsv(response);
 
 	}

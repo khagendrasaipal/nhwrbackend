@@ -22,7 +22,7 @@ public class Registration {
 	public int status = 2;
 	
 	public String municipality; //NOT REQUIRED IN CERTAIN CASES
-	public int orgid = 666666; 
+	public String orgid; 
 	
 	
 	

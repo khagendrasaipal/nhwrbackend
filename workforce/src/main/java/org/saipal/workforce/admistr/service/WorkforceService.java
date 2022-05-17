@@ -61,6 +61,12 @@ public class WorkforceService extends AutoService {
 				sort = request("sortKey")+" "+request("sortDir");
 			}
 		}
+		if(session("role").equals("superuser")) {
+			
+		}else {
+			condition= condition + " where tbl_workforce.created_by=" +auth.getUserId();
+		}
+		
 		
 		Paginator p = new Paginator();
 		Map<String, Object> result = p.setPageNo(request("page")).setPerPage(request("perPage"))

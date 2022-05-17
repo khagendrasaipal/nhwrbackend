@@ -41,6 +41,7 @@ public class PostService extends AutoService {
 			condition = condition.substring(0, condition.length() - 3);
 			condition += ")";
 		}
+		condition += " and tbl_post.created_by= "+auth.getUserId()+ " ";
 		if (!condition.isBlank()) {
 			condition = " where 1=1 " + condition;
 		}
@@ -68,9 +69,9 @@ public class PostService extends AutoService {
 		String sql = "";
 		Post model = new Post();
 		model.loadData(document);
-		sql = "INSERT INTO tbl_post (samuha,upasamuha,level,nameen,namenp,status) VALUES (?,?,?,?,?,?)";
+		sql = "INSERT INTO tbl_post (samuha,upasamuha,level,nameen,namenp,status,created_by) VALUES (?,?,?,?,?,?,?)";
 		DbResponse rowEffect = db.execute(sql,
-				Arrays.asList(model.samuha,model.upasamuha,model.level, model.nameen, model.namenp,model.status));
+				Arrays.asList(model.samuha,model.upasamuha,model.level, model.nameen, model.namenp,model.status,auth.getUserId()));
 		if (rowEffect.getErrorNumber() == 0) {
 			return Messenger.getMessenger().success();
 
