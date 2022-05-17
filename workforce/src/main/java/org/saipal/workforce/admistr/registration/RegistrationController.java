@@ -10,7 +10,11 @@ import org.saipal.fmisutil.util.Validator;
 import org.saipal.workforce.admistr.registration.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,5 +40,25 @@ public class RegistrationController {
 		}
 	}
 	
+	@PutMapping("/change-pasword-self/{id}")
+	public ResponseEntity<Map<String, Object>> changePasswordSelf(HttpServletRequest request,@PathVariable String id) {
+//		System.out.println("change Password Self"+ id);
+		return registrationService.changePasswordSelf(id);
+	}
+	
+	@PutMapping("/change-paasword/{id}")
+	public ResponseEntity<Map<String, Object>> changePassword(HttpServletRequest request,@PathVariable String id) {
+		return registrationService.changePassword(id);
+	}
+	
+	@GetMapping("")
+	public ResponseEntity<Map<String, Object>> index(HttpServletRequest request) {
+		return registrationService.index();
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Map<String, Object>> destroy(HttpServletRequest request, @PathVariable String id) {
+		return registrationService.destroy(id);
+	}
 	
 }

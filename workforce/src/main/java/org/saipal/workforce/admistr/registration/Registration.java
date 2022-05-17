@@ -23,9 +23,7 @@ public class Registration {
 	
 	public String municipality; //NOT REQUIRED IN CERTAIN CASES
 	public String orgid; 
-	
-	
-	
+
 	public void loadData(RequestParser doc) {
 		for (Field f : this.getClass().getFields()) {
 			String fname = f.getName();
@@ -38,6 +36,11 @@ public class Registration {
 			}
 		}
 	}
+	
+	public static List<String> searchables() {
+		return Arrays.asList("users.username","users.email");
+	}
+	
 
 	public static Map<String, String> rules() {
 		Map<String, String> rules = new HashMap<>();
