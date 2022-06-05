@@ -14,6 +14,7 @@ public class Emptype {
 	public String nameen;
 	public String namenp;
 	public String status;
+	public String code;
 	
 	public void loadData(RequestParser doc) {
 		for (Field f : this.getClass().getFields()) {

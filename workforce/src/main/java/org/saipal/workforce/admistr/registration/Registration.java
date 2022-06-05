@@ -48,11 +48,8 @@ public class Registration {
 		rules.put("password", "required");
 		rules.put("surname", "required");
 		rules.put("firstname", "required");
-		rules.put("email", "required");
-		
+		rules.put("email", "required");	
 		rules.put("role", "required");	
-		rules.put("province", "required");	
-		rules.put("district", "required");	
 		return rules;
 	}
 }

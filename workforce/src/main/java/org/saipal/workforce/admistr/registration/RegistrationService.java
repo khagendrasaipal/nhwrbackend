@@ -137,18 +137,20 @@ public class RegistrationService extends AutoService {
 		Registration model = new Registration();
 		model.loadData(document);
 		String orgid="";
-		if(model.role.equals("FWD")) {
-			orgid="500000";
-		}
-		if(model.role.equals("HOD")) {
-			orgid="600000";
-		}
-		if(model.role.equals("DPO")) {
-			orgid="700000";
-		}
-		if(model.role.equals("HF")) {
+		if(model.role.equals("Local")) {
+			orgid=model.municipality;
+		}else {
 			orgid=model.orgid;
 		}
+//		if(model.role.equals("HOD")) {
+//			orgid="600000";
+//		}
+//		if(model.role.equals("DPO")) {
+//			orgid="700000";
+//		}
+//		if(model.role.equals("HF")) {
+//			orgid=model.orgid;
+//		}
 		sql = "INSERT INTO users (username,password,status,surname,firstName, email, mobile, role, province, district, municipality, orgid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		DbResponse rowEffect = db.execute(sql, Arrays.asList(model.username, new BCryptPasswordEncoder().encode(model.password), model.status,model.surname, model.firstname, model.email, model.mobile,

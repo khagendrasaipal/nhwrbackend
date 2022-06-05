@@ -30,7 +30,7 @@ public class PathMatchingConfig implements WebMvcConfigurer {
 	
 	String[] excludeResource = { "/favicon.ico", "/sw.js", "/error", "/assets/**", "/backup/**", "/css/**", "/ext/**",
 			"/fonts/**", "/icon/**", "/icons/**", "/images/**", "/img/**", "/jeasy/**", "/jeasy_blue/**", "/jeasyl/**",
-			"/js/**", "/keystore/**", "/menuimage/**", "/ng-auth/**", "/qrcodes/**", "/ribbon/**", "/sjs/**", "/apphome/js/dhtmlx/** ","/wrtc-signal","/file-repo/get-file/**","/Emblem_of_Nepal_2020.svg","/test/web","/test/dashboard","/test/**","/getDashboard","/registry/downloadcsv"};
+			"/js/**", "/keystore/**", "/menuimage/**", "/ng-auth/**", "/qrcodes/**", "/ribbon/**", "/sjs/**", "/apphome/js/dhtmlx/** ","/wrtc-signal","/file-repo/get-file/**","/Emblem_of_Nepal_2020.svg","/test/web","/test/dashboard","/test/**","/getDashboard","/registry/downloadcsv","/registry/downloadreport","/registry/getData"};
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {

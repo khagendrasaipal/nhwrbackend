@@ -26,7 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			"/relogin", "/en-pass/**", "/api/**", "/auth-login", "/auth", "/ng-auth/**", "/assets/**", "/backup/**",
 			"/css/**", "/ext/**", "/fonts/**", "/icon/**", "/icons/**", "/images/**", "/img/**", "/jeasy/**",
 			"/jeasy_blue/**", "/jeasyl/**", "/js/**", "/keystore/**", "/menuimage/**", "/ng-auth/**", "/qrcodes/**",
-			"/ribbon/**", "/sjs/**", "/apphome/js/dhtmlx/**", "/wrtc-signal","/get-auth-token","/calender/**","/test/**","test/authorize","/test/dashboard","/test/web","/Emblem_of_Nepal_2020.svg","/getDashboard","/registry/downloadcsv" };
+			"/ribbon/**", "/sjs/**", "/apphome/js/dhtmlx/**", "/wrtc-signal","/get-auth-token","/calender/**","/test/**","test/authorize","/test/dashboard","/test/web","/Emblem_of_Nepal_2020.svg","/getDashboard","/registry/downloadcsv","/registry/downloadreport","/registry/getData"};
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {

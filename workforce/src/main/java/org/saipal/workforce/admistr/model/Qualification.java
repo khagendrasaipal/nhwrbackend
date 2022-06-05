@@ -8,29 +8,19 @@ import java.util.Map;
 
 import org.saipal.fmisutil.parser.RequestParser;
 
-public class Workforce {
+public class Qualification {
 
 
 	public String id;
-	public String provinceid;
-	public String districtid;
-	public String palika;
-	public String ward;
-	public String org;
-	public String authority;
-	public String authlevel;
-	public String ownership;
-	public String ftype;
-	public String orgtype;
-	public String officeid;
-	public String admlvl;
+	public String council;
+	public String level;
+	public String nameen;
+	public String namenp;
+	public String status;
 	
 	public void loadData(RequestParser doc) {
 		for (Field f : this.getClass().getFields()) {
-			
-				String fname = f.getName();
-			
-			
+			String fname = f.getName();
 			try {
 				f.set(this, doc.getElementById(fname).value);
 			} catch (IllegalArgumentException e) {
@@ -42,14 +32,15 @@ public class Workforce {
 	}
 
 	public static List<String> searchables() {
-		return Arrays.asList("org","hfregistry.hf_name","orgname");
+		return Arrays.asList("tbl_qualification.nameen", "tbl_qualification.namenp","tbl_council.nameen","tbl_edulevel.nameen");
 	}
 
 	public static Map<String, String> rules() {
 		Map<String, String> rules = new HashMap<>();
-		rules.put("orgtype", "required");
-		
-		
+		rules.put("council", "required");
+		rules.put("level", "required");
+		rules.put("namenp", "required");
+		rules.put("nameen", "required");
 		return rules;
 	}
 }

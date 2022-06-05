@@ -155,9 +155,43 @@ public class SubGroupController {
 		return objService.getHf();
 
 	}
+	@GetMapping("get-hfbymunc")
+	public ResponseEntity<Map<String, Object>> gethfbymunc(HttpServletRequest request) {
+		return objService.gethfbymunc();
+
+	}
 	@GetMapping("get-orgs")
 	public ResponseEntity<Map<String, Object>> getorgs(HttpServletRequest request) {
 		return objService.getorgs();
+
+	}
+	
+	@GetMapping("get-admlvl")
+	public ResponseEntity<Map<String, Object>> getadmlvl(HttpServletRequest request) {
+		return objService.getadmlvl();
+
+	}
+	
+	@GetMapping("get-edulevel")
+	public ResponseEntity<Map<String, Object>> getedulevel(HttpServletRequest request) {
+		return objService.getedulevel();
+
+	}
+	
+	@GetMapping("get-qualification")
+	public ResponseEntity<Map<String, Object>> getqualification(HttpServletRequest request) {
+		return objService.getqualification();
+
+	}
+	@GetMapping("get-hfo/{id}")
+	public ResponseEntity<Map<String, Object>> gethfo(HttpServletRequest request,@PathVariable String id) {
+		return objService.gethfo(id);
+
+	}
+	
+	@GetMapping("get-offices/{id}")
+	public ResponseEntity<Map<String, Object>> getoffices(HttpServletRequest request,@PathVariable String id) {
+		return objService.getoffices(id);
 
 	}
 }

@@ -3,10 +3,17 @@ server:
 
 spring:
   datasource:
+    driverClassName: org.mariadb.jdbc.Driver
     url: jdbc:mysql://10.10.10.9/health_registry
     username: root
     password: root
-  jpa:    database-platform: org.hibernate.dialect.MySQL8Dialect
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      generate-ddl: true
+      ddl-auto: update
+      globally_quoted_identifiers: true
+
   data:
     mongodb:
       uri: mongodb://root:root@10.10.10.2:27017/mongofileserver
@@ -15,11 +22,11 @@ spring:
       max-file-size: 256MB
       max-request-size: 256MB
       enabled: true
+#  sql:
+#    init:
+#      platform: org.hibernate.dialect.MySQL8Dialect
       
 oas:
   datasource:
     mongoUri: mongodb://root:root@10.10.10.2:27017/oas
     
-oascentral:
-  client_id: devinstance
-  client_secret: devinstance

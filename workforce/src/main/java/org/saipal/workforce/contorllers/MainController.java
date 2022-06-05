@@ -181,49 +181,18 @@ public class MainController {
 		return "test/dashboard";
 	}
 	
-	@GetMapping("/test/web")
+	@GetMapping("/registry/getData")
 	public String webs(Model model,HttpServletRequest request) throws JSONException {
-		List<Tuple> org = createClient.getOrgs(request);
-		List<Tuple> chart=createClient.getChartConfig(request);
-		List<Tuple> intro=createClient.getIntro(request);
-		List<Tuple> ward = createClient.getWards(request);
-		List<Tuple> updates = createClient.getUpdates(request);
-		List<Map<String, Object>> weather=createClient.getWeatherInfo(request);
-		String lat=createClient.getLat(request);
-		String longs=createClient.getLong(request);
-		String orgname=org.get(0).get("name").toString();
-		String intros="Introduction of municipality";
-		String hf=createClient.getHfCount(request);
-		List<Tuple> census=createClient.getCensusData(request);
-		hf = hf.replace("[","");
-		hf = hf.replace("]","");
-		hf=hf.replace("\"", "");
-		String wards="0";
-		String update="स्वास्थ्य ड्यासबोर्ड मुख्य रूपले ग्राफिकल चार्टहरू, नक्साहरू र तथ्याङ्कहरूको सहायताले स्वास्थ्य संकेतकहरूको प्रगतिको निरीक्षण गर्न प्रयोग हुन्छ । सान्दर्भिक चार्टहरू, नक्साहरू र तथ्याङ्कहरू पनि ड्यासबोर्डबाट डाउनलोड गर्न सकिन्छ ।";
-		if (!ward.isEmpty()) {
-			wards=ward.get(0).get("numberofward").toString();
-		}
-		if (!intro.isEmpty()) {
-			intros=intro.get(0).get("value").toString();
-		}
 		
-		if (!updates.isEmpty()) {
-			update=updates.get(0).get("value").toString();
-		}
-		model.addAttribute("orgname", orgname);
+		List<Tuple> chart=createClient.gettabledata(request);
+		List<String> field=createClient.getField(request);
+		Map<String, Object> post=createClient.getPost(request);
+		System.out.println(post.get("800"));
+		
 		model.addAttribute("chart",chart);
-		model.addAttribute("temp",weather.get(0).get("temp"));
-		model.addAttribute("type",weather.get(0).get("type"));
-		model.addAttribute("desc",weather.get(0).get("desc"));
-		model.addAttribute("icon",weather.get(0).get("icon"));
-		model.addAttribute("orgid",org.get(0).get("id").toString());
-		model.addAttribute("intro",intros);
-		model.addAttribute("hf",hf);
-		model.addAttribute("ward",wards);
-		model.addAttribute("update",update);
-		model.addAttribute("lat",lat);
-		model.addAttribute("longs",longs);
-		model.addAttribute("census",census.get(0));
+		model.addAttribute("field",field);
+		model.addAttribute("post",post);
+		
 		return "test/web";
 	}
 

@@ -1,10 +1,8 @@
 package org.saipal.workforce.admistr.controller;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Tuple;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,6 +10,7 @@ import org.saipal.fmisutil.util.Messenger;
 import org.saipal.fmisutil.util.ValidationService;
 import org.saipal.fmisutil.util.Validator;
 import org.saipal.workforce.admistr.model.Workforce;
+import org.saipal.workforce.admistr.service.EmployeeService;
 import org.saipal.workforce.admistr.service.WorkforceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,25 +23,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("registry")
-public class WorkforceController {
+@RequestMapping("employee")
+public class EmployeeController {
 
 	@Autowired
 	ValidationService validationService;
 	
 	@Autowired
-	WorkforceService WorkforceService;
-	@PostMapping("")
-	public ResponseEntity<Map<String, Object>> store(HttpServletRequest request) {
-		Validator validator = validationService.validate(Workforce.rules());
-		if (validator.isFailed()) {
-
-			return Messenger.getMessenger().setData(validator.getErrorMessages()).error();
-		} else {
-
-			return WorkforceService.store();
-		}
-	}
+	EmployeeService WorkforceService;
+	
 	
 	@GetMapping("")
 	public ResponseEntity<Map<String, Object>> index(HttpServletRequest request) {
@@ -74,17 +63,6 @@ public class WorkforceController {
 	public void getward(HttpServletResponse response,HttpServletRequest request) throws IOException {
 		
 		 WorkforceService.getcsv(response);
-
-	}
-	@GetMapping("/downloadreport")
-	public void downloadreport(HttpServletResponse response,HttpServletRequest request) throws IOException {
-		
-		 WorkforceService.downloadreport(response);
-
-	}
-	@GetMapping("get-report-table")
-	public List<Tuple> gettable(HttpServletRequest request) {
-		return WorkforceService.gettable();
 
 	}
 }

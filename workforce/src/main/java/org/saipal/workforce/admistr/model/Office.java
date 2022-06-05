@@ -26,6 +26,8 @@ public class Office {
     public String council;
     public String level;
     public String council_no;
+    public String pis;
+    public String qualification;
     
 	public void loadData(RequestParser doc) {
 		for (Field f : this.getClass().getFields()) {
@@ -41,7 +43,7 @@ public class Office {
 	}
 
 	public static List<String> searchables() {
-		return Arrays.asList("officenameen", "officenamenp", "code");
+		return Arrays.asList("council_no","tbl_employee.nameen","tbl_employee.namenp");
 	}
 
 	public static Map<String, String> rules() {

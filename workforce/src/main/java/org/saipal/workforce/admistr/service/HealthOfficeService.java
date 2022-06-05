@@ -14,13 +14,13 @@ import org.saipal.fmisutil.util.DB;
 import org.saipal.fmisutil.util.DbResponse;
 import org.saipal.fmisutil.util.Messenger;
 import org.saipal.fmisutil.util.Paginator;
-import org.saipal.workforce.admistr.model.SubGroup;
+import org.saipal.workforce.admistr.model.HealthOffice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SubGroupService extends AutoService {
+public class HealthOfficeService extends AutoService {
 
 	@Autowired
 	DB db;
@@ -28,12 +28,12 @@ public class SubGroupService extends AutoService {
 	@Autowired
 	Authenticated auth;
 
-	private String table = "tbl_upasamuha";
+	private String table = "tbl_office";
 	
 	public ResponseEntity<Map<String, Object>> index() {
 		String condition = "";
 		if (!request("searchTerm").isEmpty()) {
-			List<String> searchbles = SubGroup.searchables();
+			List<String> searchbles = HealthOffice.searchables();
 			condition += "and (";
 			for (String field : searchbles) {
 				condition += field + " LIKE '%" + db.esc(request("searchTerm")) + "%' or ";
@@ -56,8 +56,8 @@ public class SubGroupService extends AutoService {
 		Paginator p = new Paginator();
 		Map<String, Object> result = p.setPageNo(request("page")).setPerPage(request("perPage"))
 				.setOrderBy(sort)
-				.select("id,nameen,namenp")
-				.sqlBody("from " + table + condition).paginate();
+				.select("id,nameen,namenp,admin_level.levelnamenp")
+				.sqlBody("from " + table + " join admin_level on admin_level.levelid=tbl_office.admlvl "+ condition).paginate();
 		if (result != null) {
 			return ResponseEntity.ok(result);
 		} else {
@@ -67,11 +67,11 @@ public class SubGroupService extends AutoService {
 
 	public ResponseEntity<Map<String, Object>> store() {
 		String sql = "";
-		SubGroup model = new SubGroup();
+		HealthOffice model = new HealthOffice();
 		model.loadData(document);
-		sql = "INSERT INTO tbl_upasamuha (samuha,nameen,namenp,status,created_by) VALUES (?,?,?,?,?)";
+		sql = "INSERT INTO tbl_office (admlvl,nameen,namenp,status,created_by) VALUES (?,?,?,?,?)";
 		DbResponse rowEffect = db.execute(sql,
-				Arrays.asList(model.samuha,model.nameen, model.namenp,model.status,auth.getUserId()));
+				Arrays.asList(model.admlvl,model.nameen, model.namenp,model.status,auth.getUserId()));
 		if (rowEffect.getErrorNumber() == 0) {
 			return Messenger.getMessenger().success();
 
@@ -82,7 +82,7 @@ public class SubGroupService extends AutoService {
 
 	public ResponseEntity<Map<String, Object>> edit(String id) {
 
-		String sql = "select id,nameen,namenp,samuha from "
+		String sql = "select id,nameen,namenp,admlvl from "
 				+ table + " where id=?";
 		Map<String, Object> data = db.getSingleResultMap(sql, Arrays.asList(id));
 		return ResponseEntity.ok(data);
@@ -90,12 +90,12 @@ public class SubGroupService extends AutoService {
 
 	public ResponseEntity<Map<String, Object>> update(String id) {
 		DbResponse rowEffect;
-		SubGroup model = new SubGroup();
+		HealthOffice model = new HealthOffice();
 		model.loadData(document);
 
-		String sql = "UPDATE tbl_upasamuha set nameen=?,namenp=?,status=?,samuha=? where id=?";
+		String sql = "UPDATE tbl_office set nameen=?,namenp=?,status=?,admlvl=? where id=?";
 		rowEffect = db.execute(sql,
-				Arrays.asList(model.nameen, model.namenp,model.status,model.samuha,id));
+				Arrays.asList(model.nameen, model.namenp,model.status,model.admlvl,id));
 
 		if (rowEffect.getErrorNumber() == 0) {
 			return Messenger.getMessenger().success();
@@ -108,7 +108,7 @@ public class SubGroupService extends AutoService {
 
 	public ResponseEntity<Map<String, Object>> destroy(String id) {
 
-		String sql = "delete from tbl_upasamuha where id  = ?";
+		String sql = "delete from tbl_office where id  = ?";
 		DbResponse rowEffect = db.execute(sql, Arrays.asList(id));
 		if (rowEffect.getErrorNumber() == 0) {
 			return Messenger.getMessenger().success();
@@ -118,27 +118,27 @@ public class SubGroupService extends AutoService {
 		}
 	}
 	
-	public ResponseEntity<Map<String, Object>> getSamuha() {
-		String sql = "select id,namenp from tbl_samuha where 1=?";
-		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(1));
-
-		List<Map<String, Object>> list = new ArrayList<>();
-		if (!admlvl.isEmpty()) {
-			for (Tuple t : admlvl) {
-				Map<String, Object> mapadmlvl = new HashMap<>();
-				mapadmlvl.put("id", t.get("id"));
-				mapadmlvl.put("namenp", t.get("namenp"));
-				list.add(mapadmlvl);
-			}
-			return Messenger.getMessenger().setData(list).success();
-
-		} else {
-			return Messenger.getMessenger().error();
-		}
-	}
+//	public ResponseEntity<Map<String, Object>> getadmlvl() {
+//		String sql = "select id,namenp from tbl_admlvl where 1=?";
+//		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(1));
+//
+//		List<Map<String, Object>> list = new ArrayList<>();
+//		if (!admlvl.isEmpty()) {
+//			for (Tuple t : admlvl) {
+//				Map<String, Object> mapadmlvl = new HashMap<>();
+//				mapadmlvl.put("id", t.get("id"));
+//				mapadmlvl.put("namenp", t.get("namenp"));
+//				list.add(mapadmlvl);
+//			}
+//			return Messenger.getMessenger().setData(list).success();
+//
+//		} else {
+//			return Messenger.getMessenger().error();
+//		}
+//	}
 	
-	public ResponseEntity<Map<String, Object>> getUpaSamuha() {
-		String sql = "select id,namenp from tbl_upasamuha where 1=?";
+	public ResponseEntity<Map<String, Object>> getUpaadmlvl() {
+		String sql = "select id,namenp from tbl_office where 1=?";
 		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(1));
 
 		List<Map<String, Object>> list = new ArrayList<>();
@@ -175,8 +175,8 @@ public class SubGroupService extends AutoService {
 		}
 	}
 
-	public ResponseEntity<Map<String, Object>> getUpaSamuha(String id) {
-		String sql = "select id,namenp from tbl_upasamuha where samuha=?";
+	public ResponseEntity<Map<String, Object>> getUpaadmlvl(String id) {
+		String sql = "select id,namenp from tbl_office where admlvl=?";
 		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(id));
 
 		List<Map<String, Object>> list = new ArrayList<>();
@@ -295,27 +295,6 @@ public class SubGroupService extends AutoService {
 //			return Messenger.getMessenger().error();
 		}
 	}
-	
-	public ResponseEntity<Map<String, Object>> gethfbymunc() {
-		String sql = "select cast(hf_code as char) as hfcode,hf_name,id from hfregistry where municipality=?";
-		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(request("mid")));
-
-		List<Map<String, Object>> list = new ArrayList<>();
-		if (!admlvl.isEmpty()) {
-			for (Tuple t : admlvl) {
-				Map<String, Object> mapadmlvl = new HashMap<>();
-				mapadmlvl.put("id", t.get("id"));
-//				mapadmlvl.put("hfcode", t.get("hfcode"));
-				mapadmlvl.put("namenp", t.get("hf_name"));
-				list.add(mapadmlvl);
-			}
-			return Messenger.getMessenger().setData(list).success();
-
-		} else {
-			return Messenger.getMessenger().setData(list).success();
-//			return Messenger.getMessenger().error();
-		}
-	}
 
 	public ResponseEntity<Map<String, Object>> getownership() {
 		String sql = "select id,name from ownership where 1=?";
@@ -385,7 +364,7 @@ public class SubGroupService extends AutoService {
 	}
 
 	public ResponseEntity<Map<String, Object>> getPost(String id) {
-		String sql = "select id,namenp from tbl_post where samuha=?";
+		String sql = "select id,namenp from tbl_post where admlvl=?";
 		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(id));
 
 		List<Map<String, Object>> list = new ArrayList<>();
@@ -406,7 +385,7 @@ public class SubGroupService extends AutoService {
 	}
 
 	public ResponseEntity<Map<String, Object>> getEmptype() {
-		String sql = "select id,namenp from tbl_emptype where 1=? order by code";
+		String sql = "select id,namenp from tbl_emptype where 1=?";
 		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(1));
 
 		List<Map<String, Object>> list = new ArrayList<>();
@@ -451,9 +430,9 @@ public class SubGroupService extends AutoService {
 //		System.out.println(session("role"));
 		String sql="";
 		if(session("role").equals("superuser")) {
-			 sql = "select cast(tbl_workforce.id as char) as id, tbl_workforce.org,tbl_office.namenp as orgname,hfregistry.hf_name,hfregistry.hf_code,admin_local_level_structure.namenp as vcname from tbl_workforce left join hfregistry on hfregistry.id=tbl_workforce.org left join tbl_office on tbl_office.id=tbl_workforce.officeid left join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where 1=?";
+			 sql = "select cast(tbl_workforce.id as char) as id, tbl_workforce.org,tbl_workforce.orgname,hfregistry.hf_name,hfregistry.hf_code from tbl_workforce left join hfregistry on hfregistry.id=tbl_workforce.org where 1=?";
 		}else {
-			 sql = "select cast(tbl_workforce.id as char) as id, tbl_workforce.org,tbl_office.namenp as orgname,hfregistry.hf_name,hfregistry.hf_code, admin_local_level_structure.namenp as vcname from tbl_workforce left join hfregistry on hfregistry.id=tbl_workforce.org left join tbl_office on tbl_office.id=tbl_workforce.officeid left join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.created_by=?";
+			 sql = "select cast(tbl_workforce.id as char) as id, tbl_workforce.org,tbl_workforce.orgname,hfregistry.hf_name,hfregistry.hf_code from tbl_workforce left join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.created_by=?";
 		}
 		
 		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(auth.getUserId()));
@@ -469,7 +448,6 @@ public class SubGroupService extends AutoService {
 				mapadmlvl.put("hfname", t.get("hf_name"));
 				mapadmlvl.put("hfcode", t.get("hf_code"));
 				mapadmlvl.put("orgname", t.get("orgname"));
-				mapadmlvl.put("vcname", t.get("vcname"));
 				
 				list.add(mapadmlvl);
 			}
@@ -483,8 +461,8 @@ public class SubGroupService extends AutoService {
 	}
 
 	public ResponseEntity<Map<String, Object>> getadmlvl() {
-		String sql = "select levelid,levelnamenp from admin_level where disabled=?";
-		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(0));
+		String sql = "select levelid,levelnamenp from admin_level where 1=?";
+		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(1));
 
 		List<Map<String, Object>> list = new ArrayList<>();
 		if (!admlvl.isEmpty()) {
@@ -492,99 +470,6 @@ public class SubGroupService extends AutoService {
 				Map<String, Object> mapadmlvl = new HashMap<>();
 				mapadmlvl.put("id", t.get("levelid"));
 				mapadmlvl.put("namenp", t.get("levelnamenp"));
-				
-				list.add(mapadmlvl);
-			}
-			System.out.println(list.get(0).get("namenp")); 
-			return Messenger.getMessenger().setData(list).success();
-
-		} else {
-			return Messenger.getMessenger().setData(list).success();
-
-		}
-	}
-
-	public ResponseEntity<Map<String, Object>> gethfo(String id) {
-		String sql="";
-		if("4".equals(id)) {
-			 sql = "select cast(vcid as char) as id,namenp from admin_local_level_structure where 4=? order by namenp";
-		}else {
-			 sql = "select id,namenp from tbl_office where admlvl=?";
-		}
-	
-		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(id));
-
-		List<Map<String, Object>> list = new ArrayList<>();
-		if (!admlvl.isEmpty()) {
-			for (Tuple t : admlvl) {
-				Map<String, Object> mapadmlvl = new HashMap<>();
-				mapadmlvl.put("id", t.get("id"));
-				mapadmlvl.put("namenp", t.get("namenp"));
-				
-				list.add(mapadmlvl);
-			}
-			return Messenger.getMessenger().setData(list).success();
-
-		} else {
-			return Messenger.getMessenger().setData(list).success();
-
-		}
-	}
-
-	public ResponseEntity<Map<String, Object>> getoffices(String id) {
-		String sql = "select id,namenp from tbl_office where province=?";
-		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(id));
-
-		List<Map<String, Object>> list = new ArrayList<>();
-		if (!admlvl.isEmpty()) {
-			for (Tuple t : admlvl) {
-				Map<String, Object> mapadmlvl = new HashMap<>();
-				mapadmlvl.put("id", t.get("id"));
-				mapadmlvl.put("namenp", t.get("namenp"));
-				
-				list.add(mapadmlvl);
-			}
-			return Messenger.getMessenger().setData(list).success();
-
-		} else {
-			return Messenger.getMessenger().setData(list).success();
-
-		}
-	}
-
-	public ResponseEntity<Map<String, Object>> getedulevel() {
-		String sql = "select id,namenp from tbl_edulevel where 1=?";
-		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(1));
-
-		List<Map<String, Object>> list = new ArrayList<>();
-		if (!admlvl.isEmpty()) {
-			for (Tuple t : admlvl) {
-				Map<String, Object> mapadmlvl = new HashMap<>();
-				mapadmlvl.put("id", t.get("id"));
-				mapadmlvl.put("namenp", t.get("namenp"));
-				
-				list.add(mapadmlvl);
-			}
-			return Messenger.getMessenger().setData(list).success();
-
-		} else {
-			return Messenger.getMessenger().setData(list).success();
-
-		}
-	}
-
-	public ResponseEntity<Map<String, Object>> getqualification() {
-		String council=request("cid");
-		String level=request("eid");
-		String sql = "select id,namenp from tbl_qualification where council=? and level=?";
-		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(council,level));
-
-		List<Map<String, Object>> list = new ArrayList<>();
-		if (!admlvl.isEmpty()) {
-			for (Tuple t : admlvl) {
-				Map<String, Object> mapadmlvl = new HashMap<>();
-				mapadmlvl.put("id", t.get("id"));
-				mapadmlvl.put("namenp", t.get("namenp"));
 				
 				list.add(mapadmlvl);
 			}
