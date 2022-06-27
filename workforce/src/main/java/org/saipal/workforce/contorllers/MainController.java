@@ -16,6 +16,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.saipal.fmisutil.ApplicationContextProvider;
+import org.saipal.fmisutil.service.AutoService;
 import org.saipal.fmisutil.util.DB;
 import org.saipal.fmisutil.util.HttpRequest;
 import org.saipal.workforce.omed.DocumentStorageService;
@@ -43,7 +44,7 @@ import com.mysql.cj.xdevapi.JsonArray;
 
 @Controller
 @RequestMapping("/")
-public class MainController {
+public class MainController extends AutoService{
 	
 	@Autowired
 	DocumentStorageService ds;
@@ -187,13 +188,57 @@ public class MainController {
 		List<Tuple> chart=createClient.gettabledata(request);
 		List<String> field=createClient.getField(request);
 		Map<String, Object> post=createClient.getPost(request);
-		System.out.println(post.get("800"));
 		
 		model.addAttribute("chart",chart);
 		model.addAttribute("field",field);
 		model.addAttribute("post",post);
 		
 		return "test/web";
+	}
+	
+	@GetMapping("/registry/pivotview")
+	public String pivotview(Model model,HttpServletRequest request) throws JSONException {
+		
+		if((request("row").equals("province")||request("row").equals("district")||request("row").equals("palika"))&& request("column").equals("post")) {
+			
+			List<Tuple> chart=createClient.getpivotdata(request);
+			List<String> field=createClient.getpivotField(request);
+			Map<String, Object> post=createClient.getpivotPost(request);
+			
+			model.addAttribute("chart",chart);
+			model.addAttribute("field",field);
+			model.addAttribute("post",post);			
+			return "test/web";
+		}else if(request("row").equals("post") && request("column").equals("emptype")){ 
+			List<Map<String, Object>> dats=createClient.getpivotdata2(request);
+			
+			model.addAttribute("data",dats);
+			
+			return "test/report2";
+		}
+			else {
+		
+			return "Records not found";
+		}
+		//		List<Tuple> chart=createClient.gettabledata(request);
+//		List<String> field=createClient.getField(request);
+//		Map<String, Object> post=createClient.getPost(request);
+//		
+//		model.addAttribute("chart",chart);
+//		model.addAttribute("field",field);
+//		model.addAttribute("post",post);
+		
+//		return "test/web";
+	}
+	
+	@GetMapping("/registry/getData2")
+	public String getData2(Model model,HttpServletRequest request) throws JSONException {
+		
+		List<Map<String, Object>> dats=createClient.gettabledata2(request);
+		
+		model.addAttribute("data",dats);
+		
+		return "test/report2";
 	}
 
 	

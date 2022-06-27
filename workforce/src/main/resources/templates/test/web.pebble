@@ -49,15 +49,16 @@
        <tr>
        <th>Post</th>
 {% for a in field %}
-<th colspan="2">{{ post.get(a) }}</th>
+<th colspan="3">{{ post.get(a) }}</th>
 {% endfor %}
 </tr>
       </tr>
       <tr>
       <th>Organization/Post type</th>
       {% for a in field %}
-<th>दरबन्दी</th>
-<th>कार्यरत</th>
+<th>स्वीकृत दरबन्दी</th>
+<th>दरबन्दीमा कार्यरत</th>
+<th>अन्य कार्यरत</th>
 {% endfor %}
       </tr>
     </thead>
@@ -67,7 +68,9 @@
       <td>{{ p.get("provincename")}}</td>
       {% for a in field %}
      <td> {{ p.get("d"+a)}} </td>
-       <td>{{  (p.get("d"+a) + p.get("k"+a))| numberformat("#")}} </td>
+    <!--  <td>{{  (p.get("d"+a) + p.get("k"+a))| numberformat("#")}} </td> -->
+      <td>{{ p.get("w"+a)}}</td>
+      <td>{{ p.get("n"+a)}}</td>
       {% endfor %}
       </tr>
    {% endfor %}

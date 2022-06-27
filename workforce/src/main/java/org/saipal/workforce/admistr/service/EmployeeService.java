@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.persistence.Tuple;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
+
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -21,6 +23,8 @@ import org.saipal.fmisutil.util.DbResponse;
 import org.saipal.fmisutil.util.Messenger;
 import org.saipal.fmisutil.util.Paginator;
 import org.saipal.workforce.admistr.model.Office;
+import org.saipal.workforce.admistr.model.SubGroup;
+import org.saipal.workforce.admistr.model.Transfer;
 import org.saipal.workforce.admistr.model.Workforce;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -63,16 +67,16 @@ public class EmployeeService extends AutoService {
 //			}
 //		}
 		if(session("role").equals("superuser")) {
-			
+			condition= condition + " where tbl_employee.soft_delete=0 ";
 		}else {
-			condition= condition + " where tbl_employee.created_by=" +auth.getUserId();
+			condition= condition + " where tbl_employee.soft_delete=0 and  tbl_employee.created_by=" +auth.getUserId();
 		}
 		
 		
 		Paginator p = new Paginator();
 		Map<String, Object> result = p.setPageNo(request("page")).setPerPage(request("perPage"))
 				.setOrderBy(sort)
-				.select("tbl_employee.id,admin_province.nameen as province,admin_district.nameen as district,hfregistry.hf_name,admin_local_level_structure.namenp as vcname,tbl_office.namenp as orgname,tbl_employee.namenp,tbl_employee.address,tbl_council.namenp as council,tbl_employee.council_no,tbl_emptype.namenp as emptype ")
+				.select("tbl_employee.id,tbl_employee.code,cast(tbl_employee.workforceid as char) as wid,admin_province.nameen as province,admin_district.nameen as district,hfregistry.hf_name,admin_local_level_structure.namenp as vcname,tbl_office.namenp as orgname,tbl_employee.namenp,tbl_employee.address,tbl_council.namenp as council,tbl_employee.council_no,tbl_emptype.namenp as emptype ")
 				.sqlBody("from " + table + " join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid left join admin_province on admin_province.pid=tbl_workforce.provinceid  left join admin_district on admin_district.districtid=tbl_workforce.districtid"
 						+ " left join hfregistry on hfregistry.id=tbl_workforce.org join tbl_council on tbl_council.id=tbl_employee.council join tbl_emptype on tbl_emptype.id=tbl_employee.emptype left join tbl_office on tbl_office.id=tbl_workforce.officeid left join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid " +condition).paginate();
 		if (result != null) {
@@ -297,4 +301,88 @@ public class EmployeeService extends AutoService {
 
 		
 }
+	@Transactional
+	public ResponseEntity<Map<String, Object>> transfer() {
+		String sql = "";
+		Transfer model = new Transfer();
+		model.loadData(document);
+		String id=model.empid;
+//		System.out.println(model);
+		sql = "INSERT INTO tbl_transfer (fromorg,empid,orgtype,admlvl,orgid,officeid,muncid,created_by) VALUES (?,?,?,?,?,?,?,?)";
+		DbResponse rowEffect = db.execute(sql,
+				Arrays.asList(model.wid,model.empid, model.orgtype,model.admlvl,model.org,model.officeid,model.palika,auth.getUserId()));
+		if (rowEffect.getErrorNumber() == 0) {
+			String sql1="select * from tbl_employee where id=?";
+			 List<Tuple> ofcstr = db.getResultList(sql1, Arrays.asList(id));
+			 String did=ofcstr.get(0).get("detailsid").toString();
+			 
+			 String sql2="select * from tbl_darbandi_details where id=?";
+			 List<Tuple> drb = db.getResultList(sql2, Arrays.asList(did));
+			 String etype=drb.get(0).get("post_type").toString();
+			 String darid=drb.get(0).get("darbandiid").toString();
+			 
+			 String sql3="select * from tbl_darbandi where id=?";
+			 List<Tuple> work = db.getResultList(sql3, Arrays.asList(darid));
+			 int dwork=Integer.parseInt(work.get(0).get("dworking").toString())-1;
+			 int kwork=Integer.parseInt(work.get(0).get("kworking").toString())-1;
+		
+		String sql0 = "UPDATE tbl_employee set soft_delete=? where id=?";
+		DbResponse rowEffect0 = db.execute(sql0, Arrays.asList(1,id));
+			if(etype.equals("1")) {
+				  String sql4="update tbl_darbandi set dworking=? where id=?";
+				  DbResponse rowEffect2 = db.execute(sql4,
+							Arrays.asList(dwork,darid));
+			  }
+			  if(etype.equals("2")) {
+				  String sql4="update tbl_darbandi set kworking=? where id=?";
+				  DbResponse rowEffect4 = db.execute(sql4,
+							Arrays.asList(kwork,darid));
+			  }
+			
+			return Messenger.getMessenger().success();
+
+		} else {
+			return Messenger.getMessenger().error();
+		}
+		
+		
+	}
+	@Transactional
+	public ResponseEntity<Map<String, Object>> retire() {
+		String id=request("empid");
+		String rdate=request("retire_date");
+		String remarks=request("remarks");
+		String sql1="select * from tbl_employee where id=?";
+		 List<Tuple> ofcstr = db.getResultList(sql1, Arrays.asList(id));
+		 String did=ofcstr.get(0).get("detailsid").toString();
+		 
+		 String sql2="select * from tbl_darbandi_details where id=?";
+		 List<Tuple> drb = db.getResultList(sql2, Arrays.asList(did));
+		 String etype=drb.get(0).get("post_type").toString();
+		 String darid=drb.get(0).get("darbandiid").toString();
+		 
+		 String sql3="select * from tbl_darbandi where id=?";
+		 List<Tuple> work = db.getResultList(sql3, Arrays.asList(darid));
+		 int dwork=Integer.parseInt(work.get(0).get("dworking").toString())-1;
+		 int kwork=Integer.parseInt(work.get(0).get("kworking").toString())-1;
+	
+	String sql0 = "UPDATE tbl_employee set soft_delete=?,retire_date=?,retire_type=?,remarks=? where id=?";
+	DbResponse rowEffect0 = db.execute(sql0, Arrays.asList(1,rdate,"r",remarks,id));
+	if(rowEffect0.getErrorNumber()==0) {
+		if(etype.equals("1")) {
+			  String sql4="update tbl_darbandi set dworking=? where id=?";
+			  DbResponse rowEffect2 = db.execute(sql4,
+						Arrays.asList(dwork,darid));
+		  }
+		  if(etype.equals("2")) {
+			  String sql4="update tbl_darbandi set kworking=? where id=?";
+			  DbResponse rowEffect4 = db.execute(sql4,
+						Arrays.asList(kwork,darid));
+		  }
+			return Messenger.getMessenger().success();
+	}else {
+		return Messenger.getMessenger().error();
+	}
+		
+	}
 }

@@ -69,7 +69,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 	List<String> excludeResource = Arrays.asList("/favicon.ico", "/sw.js", "/error", "/assets/", "/backup/", "/css/",
 			"/ext/", "/fonts/", "/icon/", "/icons/", "/images/", "/img/", "/jeasy/", "/jeasy_blue/", "/jeasyl/", "/js/",
-			"/keystore/", "/menuimage/", "/ng-auth/", "/qrcodes/", "/ribbon/", "/sjs/", "/wrtc-signal","calender","/sign-in","/test/**","/test/dashboard","/test/web","/Emblem_of_Nepal_2020.svg","/getDashboard","/registry/downloadcsv","/registry/downloadreport","/registry/getData");
+			"/keystore/", "/menuimage/", "/ng-auth/", "/qrcodes/", "/ribbon/", "/sjs/","/registry/pivotview","/registry/pivotexcel","/registry/getData2", "/wrtc-signal","/registry/downloadreport2","calender","/sign-in","/test/**","/test/dashboard","/test/web","/Emblem_of_Nepal_2020.svg","/getDashboard","/registry/downloadcsv","/registry/downloadreport","/registry/getData");
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

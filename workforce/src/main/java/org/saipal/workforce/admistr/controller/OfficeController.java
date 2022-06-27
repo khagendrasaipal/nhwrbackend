@@ -47,12 +47,13 @@ public class OfficeController {
 	@PostMapping("/addDarbandi")
 	public ResponseEntity<Map<String, Object>> addDarbandi(HttpServletRequest request) {
 
-//		Validator validator = validationService.validate(Office.rules());
-//		if (validator.isFailed()) {
-//			return Messenger.getMessenger().setData(validator.getErrorMessages()).error();
-//		} else {
 			return objService.storeDarbandi();
-//		}
+	}
+	
+	@PostMapping("/addpost")
+	public ResponseEntity<Map<String, Object>> addpost(HttpServletRequest request) {
+
+			return objService.addpost();
 	}
 	
 	@GetMapping("/{id}")

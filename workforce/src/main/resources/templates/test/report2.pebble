@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Report</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="">
+  <h2 style="text-align:center">Nepal Health Workforce Registry</h2>
+  <p>Report Table</p>        
+  
+    <table class="table table-bordered table-hover">
+    <thead>
+     
+      <tr>
+		<th>पद</th>
+		<th>स्वीकृत दरबन्दी</th>
+		<th>स्वीकृत दरबन्दीमा कार्यरत</th>
+		<th>दरबन्दी बाहेकको कार्यरत संख्या</th>
+		<th>जम्मा कार्यरत संख्या</th>
+		
+		<th>स्थायी</th>
+		<th>समिति स्थायी</th>
+		<th>अस्थायी</th>
+		<th>छात्रबृत्ति करार</th>
+		
+		<th>कार्यक्रम करार</th>
+		<th>दरबन्दी करार</th>
+		<th>समिति करार</th>
+		<th>अन्य करार</th>
+
+      </tr>
+    </thead>
+    <tbody>
+   {% for a in data %}
+   <tr>
+  <td>{{ a.get("postname")}}</td>
+  <td>{{ a.get("sdarbandi")}}</td>
+  <td>{{ a.get("dworking")}}</td>
+  <td>{{ a.get("kworking")}}</td>
+  <td>{{ a.get("tworking")}}</td>
+  <td>{{ a.get("1")}}</td>
+  <td>{{ a.get("8")}}</td>
+  <td>{{ a.get("2")}}</td>
+  <td>{{ a.get("3")}}</td>
+  <td>{{ a.get("4")}}</td>
+  <td>{{ a.get("5")}}</td>
+  <td>{{ a.get("6")}}</td>
+  <td>{{ a.get("7")}}</td>
+  </tr>
+    {% endfor %}  
+    </tbody>
+  </table>
+  
+</div>
+
+</body>
+</html>

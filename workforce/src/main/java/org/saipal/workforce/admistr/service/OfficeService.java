@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Tuple;
+import javax.transaction.Transactional;
 
 import org.saipal.fmisutil.auth.Authenticated;
 import org.saipal.fmisutil.service.AutoService;
@@ -61,18 +62,53 @@ public class OfficeService extends AutoService{
 			return Messenger.getMessenger().error();
 		}
 	}
-	
+	@Transactional
   public ResponseEntity<Map<String, Object>> store() {
 		String offid= db.newIdInt();
 		String sql = "";
 		
 		Office model = new Office();
 		model.loadData(document);
-		
-		sql = "INSERT INTO tbl_employee (workforceid,darbandiid,detailsid,orgidint,nameen,namenp,address,email,mobile,emptype,apoint_date,att_date,education,qualification,council,level,council_no,created_by,pis) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		String sqls="select max(id) as mid from tbl_employee";
+		  List<Tuple> emp = db.getResultList(sqls, Arrays.asList());
+		  int eid=0;
+		  if(emp.get(0).get("mid")==null) {
+			   eid=0;
+		  }else {
+			   eid=Integer.parseInt(emp.get(0).get("mid").toString());
+		  }
+		 
+		  String formattedStr = String.format("%08d", eid+1);
+		  String code="NHWR"+formattedStr;
+//		System.out.println("here");
+		sql = "INSERT INTO tbl_employee (workforceid,darbandiid,detailsid,orgidint,nameen,namenp,address,email,mobile,emptype,apoint_date,att_date,education,qualification,council,level,council_no,created_by,pis,dob,gender,ethnicity,code) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			DbResponse rowEffect = db.execute(sql, Arrays.asList(model.workforceid,model.darbandiid,model.detailsid,model.orgidint,model.nameen, model.namenp, model.address,model.email,model.mobile,model.emptype,model.apoint_date,model.att_date,model.education,model.qualification,model.council,model.level, model.council_no,
-				auth.getUserId(),model.pis));
+				auth.getUserId(),model.pis,model.dob,model.gender,model.ethnicity,code));
+//			System.out.println(rowEffect.getMessage());
 			if (rowEffect.getErrorNumber() == 0) {
+				String sql1="select * from tbl_darbandi_details where id=?";
+				  List<Tuple> ofcstr = db.getResultList(sql1, Arrays.asList(model.detailsid));
+				  String emptype=ofcstr.get(0).get("post_type").toString();
+				  
+				  String sql2="select * from tbl_darbandi where id=?";
+				  List<Tuple> dar = db.getResultList(sql2, Arrays.asList(model.darbandiid));
+				  int demp=Integer.parseInt(dar.get(0).get("dworking").toString())+1;
+				  int kemp=Integer.parseInt(dar.get(0).get("kworking").toString())+1;
+				  if(emptype.equals("1")) {
+					  String sql3="update tbl_darbandi set dworking=? where id=?";
+					  DbResponse rowEffect2 = db.execute(sql3,
+								Arrays.asList(demp,model.darbandiid));
+				  }
+				  if(emptype.equals("2")) {
+					  String sql4="update tbl_darbandi set kworking=? where id=?";
+					  DbResponse rowEffect3 = db.execute(sql4,
+								Arrays.asList(kemp,model.darbandiid));
+				  }
+				  
+				  String sql5="update tbl_transfer set status=? where id=?";
+				  DbResponse rowEffect5 = db.execute(sql5,
+							Arrays.asList(request("tid")));
+				
 				return Messenger.getMessenger().success();
 				
 			} else {
@@ -84,7 +120,6 @@ public class OfficeService extends AutoService{
 	  int post_no=Integer.parseInt(request("post_no"));
 	  int post_no_karar=Integer.parseInt(request("post_no_karar"));
 	  String darbandiid=request("darbandiid");
-	  System.out.println(post_no+"  "+ post_no_karar+ " "+ darbandiid);
 	  String sql1="select * from tbl_darbandi where id=?";
 	  List<Tuple> ofcstr = db.getResultList(sql1, Arrays.asList(darbandiid));
 	  String postid=ofcstr.get(0).get("post").toString();
@@ -117,12 +152,50 @@ public class OfficeService extends AutoService{
 		}
 	 
   }
+  
+  public ResponseEntity<Map<String, Object>> addpost() {
+	 
+	  String workforceid=request("workforceid");
+	  String sql1="select * from tbl_workforce where id=?";
+	  List<Tuple> ofcstr = db.getResultList(sql1, Arrays.asList(workforceid));
+	  String orgid=ofcstr.get(0).get("org").toString();
+	  try {
+		  for(int i=1;i<=50;i++) {
+				
+				if("".equals(request("groupid"+i))) {
+					
+				}else {
+					String did=db.newIdInt();
+					String sql2="INSERT INTO tbl_darbandi(id,workforce_id,orgid,groupid,subgroupid,post,post_no,post_no_karar) values(?,?,?,?,?,?,?,?)";
+					DbResponse rowEffect2 = db.execute(sql2,
+							Arrays.asList(did,workforceid,orgid,request("groupid"+i),request("subgroupid"+i),request("post"+i),request("post_count"+i),request("post_count_karar"+i)));
+					
+					for(int k=1;k<=Integer.parseInt(request("post_count"+i));k++) {
+						String sql3="INSERT INTO tbl_darbandi_details(darbandiid,workforce_id,orgid,groupid,subgroupid,post,post_type) values(?,?,?,?,?,?,?)";
+						DbResponse rowEffect3 = db.execute(sql3,
+								Arrays.asList(did,workforceid,orgid,request("groupid"+i),request("subgroupid"+i),request("post"+i),1));
+					}
+					for(int k=1;k<=Integer.parseInt(request("post_count_karar"+i));k++) {
+						String sql4="INSERT INTO tbl_darbandi_details(darbandiid,workforce_id,orgid,groupid,subgroupid,post,post_type) values(?,?,?,?,?,?,?)";
+						DbResponse rowEffect4 = db.execute(sql4,
+								Arrays.asList(did,workforceid,orgid,request("groupid"+i),request("subgroupid"+i),request("post"+i),2));
+					}
+				}
+			}
+		  return Messenger.getMessenger().success();
+		
+	} catch (Exception e) {
+		return Messenger.getMessenger().error();
+	}
+	  
+  }
+
 
 	
 
 	public ResponseEntity<Map<String, Object>> edit(String id) {
 
-		String sql = "select id,cast(workforceid as CHAR) as workforceid,cast(darbandiid as CHAR) as darbandiid,cast(orgidint as CHAR) as orgidint,cast(detailsid as CHAR) as detailsid,pis,nameen,namenp,address,email,mobile,emptype,apoint_date,att_date,education,qualification,council,level,council_no from "+table+" where id=?";
+		String sql = "select id,cast(workforceid as CHAR) as workforceid,cast(darbandiid as CHAR) as darbandiid,cast(orgidint as CHAR) as orgidint,cast(detailsid as CHAR) as detailsid,pis,nameen,namenp,address,email,mobile,emptype,apoint_date,att_date,education,qualification,council,level,council_no,dob,gender,ethnicity from "+table+" where id=?";
 		Map<String, Object> data = db.getSingleResultMap(sql,Arrays.asList(id));
 		return ResponseEntity.ok(data);
 	}
@@ -132,10 +205,10 @@ public class OfficeService extends AutoService{
 		Office model = new Office();
 		model.loadData(document);
 		
-			String sql = "UPDATE tbl_employee set workforceid=?,darbandiid=?,detailsid=?,orgidint=?,nameen=?,namenp=?,address=?,email=?,mobile=?,emptype=?,apoint_date=?,att_date=?,education=?,qualification=?,council=?,level=?,council_no=?,created_by=?,pis=? where id=?";
+			String sql = "UPDATE tbl_employee set workforceid=?,darbandiid=?,detailsid=?,orgidint=?,nameen=?,namenp=?,address=?,email=?,mobile=?,emptype=?,apoint_date=?,att_date=?,education=?,qualification=?,council=?,level=?,council_no=?,created_by=?,pis=?,dob=?,gender=?,ethnicity=? where id=?";
 			 rowEffect = db.execute(sql,
 					Arrays.asList(model.workforceid,model.darbandiid,model.detailsid,model.orgidint,model.nameen, model.namenp, model.address,model.email,model.mobile,model.emptype,model.apoint_date,model.att_date,model.education,model.qualification,model.council,model.level, model.council_no,
-							auth.getUserId(),model.pis, id));
+							auth.getUserId(),model.pis,model.dob,model.gender,model.ethnicity, id));
 		
 		
 		if (rowEffect.getErrorNumber() == 0) {
@@ -160,12 +233,35 @@ public class OfficeService extends AutoService{
 		}
 
 }
+	@Transactional
 	public ResponseEntity<Map<String, Object>> removeEmp(String id) {
-
+		 String sql1="select * from tbl_employee where id=?";
+		 List<Tuple> ofcstr = db.getResultList(sql1, Arrays.asList(id));
+		 String did=ofcstr.get(0).get("detailsid").toString();
+		 
+		 String sql2="select * from tbl_darbandi_details where id=?";
+		 List<Tuple> drb = db.getResultList(sql2, Arrays.asList(did));
+		 String etype=drb.get(0).get("post_type").toString();
+		 String darid=drb.get(0).get("darbandiid").toString();
+		 
+		 String sql3="select * from tbl_darbandi where id=?";
+		 List<Tuple> work = db.getResultList(sql3, Arrays.asList(darid));
+		 int dwork=Integer.parseInt(work.get(0).get("dworking").toString())-1;
+		 int kwork=Integer.parseInt(work.get(0).get("kworking").toString())-1;
 	
 	String sql = "UPDATE tbl_employee set soft_delete=? where id=?";
 	DbResponse rowEffect = db.execute(sql, Arrays.asList(1,id));
 	if (rowEffect.getErrorNumber() == 0) {
+		if(etype.equals("1")) {
+			  String sql4="update tbl_darbandi set dworking=? where id=?";
+			  DbResponse rowEffect2 = db.execute(sql4,
+						Arrays.asList(dwork,darid));
+		  }
+		  if(etype.equals("2")) {
+			  String sql4="update tbl_darbandi set kworking=? where id=?";
+			  DbResponse rowEffect4 = db.execute(sql4,
+						Arrays.asList(kwork,darid));
+		  }
 		return Messenger.getMessenger().success();
 		
 	} else {
@@ -201,7 +297,7 @@ public class OfficeService extends AutoService{
 	public ResponseEntity<Map<String, Object>> getTreeStructure() {
 		String orgid=request("orgid");
 //		System.out.println(orgid);
-		String sql = "select cast(tbl_darbandi.id as char) as did,tbl_darbandi.post, cast(workforce_id as CHAR) as workforceid,tbl_darbandi.orgid as orgidint,hfregistry.hf_name,tbl_samuha.namenp as officenamenp,tbl_upasamuha.namenp as officenameen,tbl_post.namenp as postname from tbl_darbandi left join hfregistry on hfregistry.id=tbl_darbandi.orgid join tbl_samuha on tbl_samuha.id=tbl_darbandi.groupid left join tbl_upasamuha on tbl_upasamuha.id=tbl_darbandi.subgroupid join tbl_post on tbl_post.id=tbl_darbandi.post where  tbl_darbandi.workforce_id=?";
+		String sql = "select cast(tbl_darbandi.id as char) as did,tbl_darbandi.post, cast(workforce_id as CHAR) as workforceid,tbl_darbandi.orgid as orgidint,hfregistry.hf_name,tbl_samuha.namenp as officenamenp,tbl_upasamuha.namenp as officenameen,tbl_post.namenp as postname from tbl_darbandi left join hfregistry on hfregistry.id=tbl_darbandi.orgid join tbl_samuha on tbl_samuha.id=tbl_darbandi.groupid left join tbl_upasamuha on tbl_upasamuha.id=tbl_darbandi.subgroupid join tbl_post on tbl_post.id=tbl_darbandi.post where  tbl_darbandi.workforce_id=? group by tbl_darbandi.post";
 		List<Tuple> ofcstr = db.getResultList(sql, Arrays.asList(orgid));
 		List<Map<String, Object>> list = new ArrayList<>();
 		if (!ofcstr.isEmpty()) {
@@ -247,7 +343,7 @@ public class OfficeService extends AutoService{
 				if("1".equals(t.get("post_type").toString())) {
 					mapOffice.put("posttype", "स्वीकृत दरबन्दी ");
 				}else {
-					mapOffice.put("posttype", "अन्य  दरबन्दी ");
+					mapOffice.put("posttype", "स्वीकृत दरबन्दी वाहेकको");
 				}
 
 				list.add(mapOffice);
@@ -279,7 +375,7 @@ public class OfficeService extends AutoService{
 				if("1".equals(t.get("post_type").toString())) {
 					mapOffice.put("posttype", "स्वीकृत दरबन्दी ");
 				}else {
-					mapOffice.put("posttype", "अन्य दरबन्दी ");
+					mapOffice.put("posttype", "स्वीकृत दरबन्दी वाहेकको");
 				}
 				
 			

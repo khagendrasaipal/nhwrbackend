@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.saipal.fmisutil.util.Messenger;
 import org.saipal.fmisutil.util.ValidationService;
 import org.saipal.fmisutil.util.Validator;
+import org.saipal.workforce.admistr.model.SubGroup;
+import org.saipal.workforce.admistr.model.Transfer;
 import org.saipal.workforce.admistr.model.Workforce;
 import org.saipal.workforce.admistr.service.EmployeeService;
 import org.saipal.workforce.admistr.service.WorkforceService;
@@ -36,6 +38,24 @@ public class EmployeeController {
 	@GetMapping("")
 	public ResponseEntity<Map<String, Object>> index(HttpServletRequest request) {
 		return WorkforceService.index();
+	}
+	
+	@PostMapping("/transfer")
+	public ResponseEntity<Map<String, Object>> store(HttpServletRequest request) {
+		Validator validator = validationService.validate(Transfer.rules());
+		if (validator.isFailed()) {
+
+			return Messenger.getMessenger().setData(validator.getErrorMessages()).error();
+		} else {
+
+			return WorkforceService.transfer();
+		}
+	}
+	@PostMapping("/retire")
+	public ResponseEntity<Map<String, Object>> retire(HttpServletRequest request) {
+		
+			return WorkforceService.retire();
+		
 	}
 	
 	@GetMapping("/{id}")

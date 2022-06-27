@@ -8,6 +8,7 @@ import javax.persistence.Tuple;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.saipal.fmisutil.service.AutoService;
 import org.saipal.fmisutil.util.Messenger;
 import org.saipal.fmisutil.util.ValidationService;
 import org.saipal.fmisutil.util.Validator;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("registry")
-public class WorkforceController {
+public class WorkforceController extends AutoService {
 
 	@Autowired
 	ValidationService validationService;
@@ -80,6 +81,29 @@ public class WorkforceController {
 	public void downloadreport(HttpServletResponse response,HttpServletRequest request) throws IOException {
 		
 		 WorkforceService.downloadreport(response);
+
+	}
+	
+	@GetMapping("/pivotexcel")
+	public void pivotexcel(HttpServletResponse response,HttpServletRequest request) throws IOException {
+		if((request("row").equals("province")||request("row").equals("district")||request("row").equals("palika"))&& request("column").equals("post")) {
+			WorkforceService.downloadreportpivot(response);
+		}else if(request("row").equals("post") && request("column").equals("emptype")){ 
+			 WorkforceService.downloadreportpivot2(response);
+		}
+			else {
+		
+			
+		}
+		
+		
+
+	}
+	
+	@GetMapping("/downloadreport2")
+	public void downloadreport2(HttpServletResponse response,HttpServletRequest request) throws IOException {
+		
+		 WorkforceService.downloadreport2(response);
 
 	}
 	@GetMapping("get-report-table")

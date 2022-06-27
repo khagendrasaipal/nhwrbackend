@@ -28,6 +28,9 @@ public class Office {
     public String council_no;
     public String pis;
     public String qualification;
+    public String dob;
+    public String gender;
+    public String ethnicity;
     
 	public void loadData(RequestParser doc) {
 		for (Field f : this.getClass().getFields()) {

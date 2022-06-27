@@ -102,6 +102,30 @@ public class SubGroupController {
 		return objService.getEmptype();
 
 	}
+	
+	@GetMapping("get-ethincity")
+	public ResponseEntity<Map<String, Object>> getethincity(HttpServletRequest request) {
+		return objService.getethincity();
+
+	}
+	
+	@GetMapping("get-emps")
+	public ResponseEntity<Map<String, Object>> getEmps(HttpServletRequest request) {
+		return objService.getEmps();
+
+	}
+	@GetMapping("get-empinfo")
+	public ResponseEntity<Map<String, Object>> getEmpinfo(HttpServletRequest request) {
+		return objService.getEmpinfo();
+
+	}
+	
+	@GetMapping("get-transfer")
+	public ResponseEntity<Map<String, Object>> getTransfer(HttpServletRequest request) {
+		return objService.getTransfer();
+
+	}
+	
 	@GetMapping("get-council")
 	public ResponseEntity<Map<String, Object>> getCouncil(HttpServletRequest request) {
 		return objService.getCouncil();
@@ -132,6 +156,12 @@ public class SubGroupController {
 
 	}
 	
+	@GetMapping("get-districts")
+	public ResponseEntity<Map<String, Object>> getdistricts(HttpServletRequest request) {
+		return objService.getDistrict();
+
+	}
+	
 	@GetMapping("get-hf-details/{id}")
 	public ResponseEntity<Map<String, Object>> gethfdetails(HttpServletRequest request,@PathVariable String id) {
 		return objService.gethfdetails(id);
@@ -141,6 +171,31 @@ public class SubGroupController {
 	@GetMapping("get-palika/{id}")
 	public ResponseEntity<Map<String, Object>> getpalika(HttpServletRequest request,@PathVariable String id) {
 		return objService.getPalika(id);
+
+	}
+	
+	@GetMapping("get-palikas")
+	public ResponseEntity<Map<String, Object>> getpalikas(HttpServletRequest request) {
+		return objService.getPalikas();
+
+	}
+	
+
+	@GetMapping("get-counts")
+	public ResponseEntity<Map<String, Object>> getCounts(HttpServletRequest request) {
+		return objService.getCounts();
+
+	}
+	
+	@GetMapping("get-ethnicitycount")
+	public ResponseEntity<Map<String, Object>> ethnicitycount(HttpServletRequest request) {
+		return objService.ethnicitycount();
+
+	}
+	
+	@GetMapping("get-sanctioned")
+	public ResponseEntity<Map<String, Object>> getsanctioned(HttpServletRequest request) {
+		return objService.getsanctioned();
 
 	}
 	

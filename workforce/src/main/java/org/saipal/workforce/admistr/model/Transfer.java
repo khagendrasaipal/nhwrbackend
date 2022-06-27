@@ -8,22 +8,17 @@ import java.util.Map;
 
 import org.saipal.fmisutil.parser.RequestParser;
 
-public class Workforce {
-
-
-	public String id;
+public class Transfer {
+	public String empid;
+	public String orgtype;
+	public String admlvl;
 	public String provinceid;
 	public String districtid;
 	public String palika;
-	public String ward;
 	public String org;
-	public String authority;
-	public String authlevel;
-	public String ownership;
-	public String ftype;
-	public String orgtype;
 	public String officeid;
-	public String admlvl;
+	public String wid;
+	
 	
 	public void loadData(RequestParser doc) {
 		for (Field f : this.getClass().getFields()) {
@@ -42,7 +37,7 @@ public class Workforce {
 	}
 
 	public static List<String> searchables() {
-		return Arrays.asList("hfregistry.hf_name","tbl_office.namenp","admin_local_level_structure.namenp");
+		return Arrays.asList("org","hfregistry.hf_name","orgname");
 	}
 
 	public static Map<String, String> rules() {

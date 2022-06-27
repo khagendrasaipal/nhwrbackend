@@ -425,6 +425,84 @@ public class SubGroupService extends AutoService {
 //			return Messenger.getMessenger().error();
 		}
 	}
+	
+	public ResponseEntity<Map<String, Object>> getethincity() {
+		String sql = "select id,name from tbl_ethnicity where 1=? order by id";
+		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(1));
+
+		List<Map<String, Object>> list = new ArrayList<>();
+		if (!admlvl.isEmpty()) {
+			for (Tuple t : admlvl) {
+				Map<String, Object> mapadmlvl = new HashMap<>();
+				mapadmlvl.put("id", t.get("id"));
+				mapadmlvl.put("name", t.get("name"));
+				
+				list.add(mapadmlvl);
+			}
+			return Messenger.getMessenger().setData(list).success();
+
+		} else {
+			return Messenger.getMessenger().setData(list).success();
+//			return Messenger.getMessenger().error();
+		}
+	}
+	
+	public ResponseEntity<Map<String, Object>> getEmps() {
+		String council=request("cno");
+		String sql = "select * from tbl_employee where council_no=? limit 1";
+		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(council));
+
+		List<Map<String, Object>> list = new ArrayList<>();
+		if (!admlvl.isEmpty()) {
+			for (Tuple t : admlvl) {
+				Map<String, Object> mapadmlvl = new HashMap<>();
+				mapadmlvl.put("nameen", t.get("nameen"));
+				mapadmlvl.put("namenp", t.get("namenp"));
+				mapadmlvl.put("address", t.get("address"));
+				mapadmlvl.put("email", t.get("email"));
+				mapadmlvl.put("mobile", t.get("mobile"));
+				
+				list.add(mapadmlvl);
+			}
+			return Messenger.getMessenger().setData(list).success();
+
+		} else {
+			return Messenger.getMessenger().setData(list).success();
+//			return Messenger.getMessenger().error();
+		}
+	}
+	
+	public ResponseEntity<Map<String, Object>> getEmpinfo() {
+		String id=request("empid");
+		String sql = "select * from tbl_employee where id=? limit 1";
+		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(id));
+
+		List<Map<String, Object>> list = new ArrayList<>();
+		if (!admlvl.isEmpty()) {
+			for (Tuple t : admlvl) {
+				Map<String, Object> mapadmlvl = new HashMap<>();
+				mapadmlvl.put("nameen", t.get("nameen"));
+				mapadmlvl.put("namenp", t.get("namenp"));
+				mapadmlvl.put("address", t.get("address"));
+				mapadmlvl.put("email", t.get("email"));
+				mapadmlvl.put("mobile", t.get("mobile"));
+				mapadmlvl.put("council", t.get("council"));
+				mapadmlvl.put("council_no", t.get("council_no"));
+				mapadmlvl.put("emptype", t.get("emptype"));
+				mapadmlvl.put("level", t.get("level"));
+				mapadmlvl.put("education", t.get("education"));
+				mapadmlvl.put("qualification", t.get("qualification"));
+				mapadmlvl.put("pis", t.get("pis"));
+				
+				list.add(mapadmlvl);
+			}
+			return Messenger.getMessenger().setData(list).success();
+
+		} else {
+			return Messenger.getMessenger().setData(list).success();
+//			return Messenger.getMessenger().error();
+		}
+	}
 
 	public ResponseEntity<Map<String, Object>> getCouncil() {
 		String sql = "select id,namenp from tbl_council where 1=?";
@@ -507,9 +585,9 @@ public class SubGroupService extends AutoService {
 	public ResponseEntity<Map<String, Object>> gethfo(String id) {
 		String sql="";
 		if("4".equals(id)) {
-			 sql = "select cast(vcid as char) as id,namenp from admin_local_level_structure where 4=? order by namenp";
+			 sql = "select cast(vcid as char) as id,namenp,nameen from admin_local_level_structure where 4=? order by namenp";
 		}else {
-			 sql = "select id,namenp from tbl_office where admlvl=?";
+			 sql = "select id,namenp,nameen from tbl_office where admlvl=?";
 		}
 	
 		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(id));
@@ -520,6 +598,7 @@ public class SubGroupService extends AutoService {
 				Map<String, Object> mapadmlvl = new HashMap<>();
 				mapadmlvl.put("id", t.get("id"));
 				mapadmlvl.put("namenp", t.get("namenp"));
+				mapadmlvl.put("nameen", t.get("nameen"));
 				
 				list.add(mapadmlvl);
 			}
@@ -532,7 +611,7 @@ public class SubGroupService extends AutoService {
 	}
 
 	public ResponseEntity<Map<String, Object>> getoffices(String id) {
-		String sql = "select id,namenp from tbl_office where province=?";
+		String sql = "select id,namenp,nameen from tbl_office where province=?";
 		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(id));
 
 		List<Map<String, Object>> list = new ArrayList<>();
@@ -541,6 +620,7 @@ public class SubGroupService extends AutoService {
 				Map<String, Object> mapadmlvl = new HashMap<>();
 				mapadmlvl.put("id", t.get("id"));
 				mapadmlvl.put("namenp", t.get("namenp"));
+				mapadmlvl.put("nameen", t.get("nameen"));
 				
 				list.add(mapadmlvl);
 			}
@@ -576,7 +656,7 @@ public class SubGroupService extends AutoService {
 	public ResponseEntity<Map<String, Object>> getqualification() {
 		String council=request("cid");
 		String level=request("eid");
-		String sql = "select id,namenp from tbl_qualification where council=? and level=?";
+		String sql = "select id,namenp from tbl_qualification where council=? and level=? order by nameen";
 		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(council,level));
 
 		List<Map<String, Object>> list = new ArrayList<>();
@@ -593,6 +673,166 @@ public class SubGroupService extends AutoService {
 		} else {
 			return Messenger.getMessenger().setData(list).success();
 
+		}
+	}
+
+	public ResponseEntity<Map<String, Object>> getTransfer() {
+		String wid=request("wid");
+		String sql = "select * from tbl_workforce where id=?";
+		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList(wid));
+		
+		String sql1 = "select tbl_transfer.empid,tbl_transfer.id as tid,tbl_employee.namenp as empname from tbl_transfer join tbl_employee on tbl_employee.id=tbl_transfer.empid where orgtype=? and admlvl=? and officeid=? and orgid=? and muncid=?";
+		List<Tuple> transfer = db.getResultList(sql1, Arrays.asList(admlvl.get(0).get("orgtype"),admlvl.get(0).get("admlvl"),admlvl.get(0).get("officeid"),admlvl.get(0).get("org"),admlvl.get(0).get("palika")));
+		List<Map<String, Object>> list = new ArrayList<>();
+		if(transfer!=null) {
+		for (Tuple t : transfer) {
+			Map<String, Object> mapadmlvl = new HashMap<>();
+			mapadmlvl.put("tid", t.get("tid"));
+			mapadmlvl.put("empid", t.get("empid"));
+			mapadmlvl.put("empname", t.get("empname"));
+			
+			list.add(mapadmlvl);
+		}
+		return Messenger.getMessenger().setData(list).success();
+		}else {
+			return Messenger.getMessenger().setData(list).success();
+		}
+		
+	}
+
+	public ResponseEntity<Map<String, Object>> getDistrict() {
+		String sql = "select districtid,namenp from admin_district";
+		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList());
+
+		List<Map<String, Object>> list = new ArrayList<>();
+		if (!admlvl.isEmpty()) {
+			for (Tuple t : admlvl) {
+				Map<String, Object> mapadmlvl = new HashMap<>();
+				mapadmlvl.put("pid", t.get("districtid"));
+				mapadmlvl.put("namenp", t.get("namenp"));
+				list.add(mapadmlvl);
+			}
+			return Messenger.getMessenger().setData(list).success();
+
+		} else {
+			return Messenger.getMessenger().setData(list).success();
+//			return Messenger.getMessenger().error();
+		}
+	}
+
+	public ResponseEntity<Map<String, Object>> getPalikas() {
+		String sql = "select cast(vcid as char) as vcid,namenp from admin_local_level_structure ";
+		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList());
+
+		List<Map<String, Object>> list = new ArrayList<>();
+		if (!admlvl.isEmpty()) {
+			for (Tuple t : admlvl) {
+				Map<String, Object> mapadmlvl = new HashMap<>();
+				mapadmlvl.put("pid", t.get("vcid"));
+				mapadmlvl.put("namenp", t.get("namenp"));
+				list.add(mapadmlvl);
+			}
+			return Messenger.getMessenger().setData(list).success();
+
+		} else {
+			return Messenger.getMessenger().setData(list).success();
+		}
+	}
+
+	public ResponseEntity<Map<String, Object>> getCounts() {
+		String sql = "select count(tbl_employee.id) as sanghiya from tbl_employee join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.admlvl=1 and tbl_employee.soft_delete=0";
+		List<Tuple> sanghiya = db.getResultList(sql, Arrays.asList());
+		
+		String sql1 = "select count(tbl_employee.id) as pradesh from tbl_employee join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid  where tbl_workforce.admlvl=2 and tbl_employee.soft_delete=0";
+		List<Tuple> pradesh = db.getResultList(sql1, Arrays.asList());
+		
+		String sql2 = "select count(tbl_employee.id) as local from tbl_employee join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.admlvl=4 and tbl_employee.soft_delete=0";
+		List<Tuple> local = db.getResultList(sql2, Arrays.asList());
+		
+		String sql3 = "select count(tbl_employee.id) as hf from tbl_employee join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.orgtype=4 and tbl_employee.soft_delete=0";
+		List<Tuple> hf = db.getResultList(sql3, Arrays.asList());
+
+		List<Map<String, Object>> list = new ArrayList<>();
+		
+				Map<String, Object> mapadmlvl = new HashMap<>();
+				mapadmlvl.put("sangh", sanghiya.get(0).get("sanghiya"));
+				mapadmlvl.put("pradesh", pradesh.get(0).get("pradesh"));
+				mapadmlvl.put("local", local.get(0).get("local"));
+				mapadmlvl.put("hf", hf.get(0).get("hf"));
+				list.add(mapadmlvl);
+			
+			return Messenger.getMessenger().setData(list).success();
+
+		
+	}
+
+	public ResponseEntity<Map<String, Object>> getsanctioned() {
+		String sql = "select COALESCE(sum(tbl_darbandi.post_no),0) as tdarbandi,COALESCE(sum(tbl_darbandi.dworking),0) as wdarbandi from tbl_darbandi  join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id  where tbl_workforce.provinceid=1";
+		List<Tuple> p1 = db.getResultList(sql, Arrays.asList());
+		
+		String sql2 = "select COALESCE(sum(tbl_darbandi.post_no),0) as tdarbandi,COALESCE(sum(tbl_darbandi.dworking),0) as wdarbandi from tbl_darbandi  join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id  where tbl_workforce.provinceid=2";
+		List<Tuple> p2 = db.getResultList(sql2, Arrays.asList());
+		
+		String sql3 = "select COALESCE(sum(tbl_darbandi.post_no),0) as tdarbandi,COALESCE(sum(tbl_darbandi.dworking),0) as wdarbandi from tbl_darbandi  join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id  where tbl_workforce.provinceid=3";
+		List<Tuple> p3 = db.getResultList(sql3, Arrays.asList());
+		
+		String sql4 = "select COALESCE(sum(tbl_darbandi.post_no),0) as tdarbandi,COALESCE(sum(tbl_darbandi.dworking),0) as wdarbandi from tbl_darbandi  join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id  where tbl_workforce.provinceid=4";
+		List<Tuple> p4 = db.getResultList(sql4, Arrays.asList());
+		
+		String sql5 = "select COALESCE(sum(tbl_darbandi.post_no),0) as tdarbandi,COALESCE(sum(tbl_darbandi.dworking),0) as wdarbandi from tbl_darbandi  join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id  where tbl_workforce.provinceid=5";
+		List<Tuple> p5 = db.getResultList(sql5, Arrays.asList());
+		
+		String sql6 = "select COALESCE(sum(tbl_darbandi.post_no),0) as tdarbandi,COALESCE(sum(tbl_darbandi.dworking),0) as wdarbandi from tbl_darbandi  join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id  where tbl_workforce.provinceid=6";
+		List<Tuple> p6 = db.getResultList(sql6, Arrays.asList());
+		
+		String sql7 = "select COALESCE(sum(tbl_darbandi.post_no),0) as tdarbandi,COALESCE(sum(tbl_darbandi.dworking),0) as wdarbandi from tbl_darbandi  join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id  where tbl_workforce.provinceid=7";
+		List<Tuple> p7 = db.getResultList(sql7, Arrays.asList());
+		
+		List<Map<String, Object>> list = new ArrayList<>();
+		Map<String, Object> mapadmlvl = new HashMap<>();
+		mapadmlvl.put("p1d", p1.get(0).get("tdarbandi"));
+		mapadmlvl.put("p1w", p1.get(0).get("wdarbandi"));
+		
+		mapadmlvl.put("p2d", p2.get(0).get("tdarbandi"));
+		mapadmlvl.put("p2w", p2.get(0).get("wdarbandi"));
+		
+		mapadmlvl.put("p3d", p3.get(0).get("tdarbandi"));
+		mapadmlvl.put("p3w", p3.get(0).get("wdarbandi"));
+		
+		mapadmlvl.put("p4d", p4.get(0).get("tdarbandi"));
+		mapadmlvl.put("p4w", p4.get(0).get("wdarbandi"));
+		
+		mapadmlvl.put("p5d", p5.get(0).get("tdarbandi"));
+		mapadmlvl.put("p5w", p5.get(0).get("wdarbandi"));
+		
+		mapadmlvl.put("p6d", p6.get(0).get("tdarbandi"));
+		mapadmlvl.put("p6w", p6.get(0).get("wdarbandi"));
+		
+		mapadmlvl.put("p7d", p7.get(0).get("tdarbandi"));
+		mapadmlvl.put("p7w", p7.get(0).get("wdarbandi"));
+		
+		list.add(mapadmlvl);
+			return Messenger.getMessenger().setData(list).success();
+
+		
+	}
+
+	public ResponseEntity<Map<String, Object>> ethnicitycount() {
+		String sql = "select tbl_ethnicity.name as ename,count(tbl_employee.id) as ecount from tbl_ethnicity left join tbl_employee on tbl_employee.ethnicity=tbl_ethnicity.id  group by tbl_ethnicity.id";
+		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList());
+
+		List<Map<String, Object>> list = new ArrayList<>();
+		if (!admlvl.isEmpty()) {
+			for (Tuple t : admlvl) {
+				Map<String, Object> mapadmlvl = new HashMap<>();
+				mapadmlvl.put("name", t.get("ename"));
+				mapadmlvl.put("count", t.get("ecount"));
+				list.add(mapadmlvl);
+			}
+			return Messenger.getMessenger().setData(list).success();
+
+		} else {
+			return Messenger.getMessenger().setData(list).success();
 		}
 	}
 

@@ -10,8 +10,14 @@ import java.util.Map;
 
 import javax.persistence.Tuple;
 import javax.persistence.TupleElement;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -328,6 +334,325 @@ public class ClientCreateTestService extends AutoService{
 //		return tList;
 		return tList1;
 	}
+	
+	public List<Map<String, Object>> gettabledata2(HttpServletRequest request) {
+		String orgtype=request("orgtype");
+		String aid=request("admid");
+		String pid=request("pid");
+		String did=request("did");
+		String munc=request("munc");
+		String oid=request("ofc");
+		String hfid=request("hfid");
+		
+		String filename = "healthworkforce.csv";
+		String sql="";
+		
+		if("1".equals(orgtype)) {
+			if(aid.equals("")) {
+				sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.orgtype=1 group by tbl_darbandi.post";
+			}
+			if(aid.equals("1")) {
+				if(oid.equals("0")) {
+					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=1 group by tbl_darbandi.post";
+				}else {
+					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+" group by tbl_darbandi.post";
+				}
+			}
+			if(aid.equals("2")) {
+				if(pid.equals("0")) {
+					sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=2 group by tbl_darbandi.post";
+				}else {
+					if(oid.equals("0")) {
+						sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" group by tbl_darbandi.post";
+					}else {
+						sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.officeid="+oid+" group by tbl_darbandi.post";
+					}
+				}
+			}
+			if(aid.equals("4")) {
+				if(pid.equals("0")) {
+					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 group by tbl_darbandi.post";
+				}else {
+					if(did.equals("0")) {
+						sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+" group by tbl_darbandi.post";
+					}else {
+						if(munc.equals("0")) {
+							sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_darbandi.post";
+						}else {
+							sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+" group by tbl_darbandi.post";
+						}
+					}
+					 
+				}
+			}
+			
+		}else {
+			if(pid.equals("0")) {
+				sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.orgtype=4 group by tbl_darbandi.post";
+			}else {
+				if(did.equals("0")) {
+					
+					sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+pid+" group by tbl_darbandi.post";
+				}else {
+					if(munc.equals("0")) {
+						sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+did+" group by tbl_darbandi.post";
+					}else {
+						if(hfid.equals("0")) {
+							sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.palika="+munc+" group by tbl_darbandi.post";
+						}else {
+							sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.org="+hfid+" group by tbl_darbandi.post";
+						}
+					}
+				}
+			}
+		}
+//		System.out.println(sql);
+
+		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList());
+		
+		
+		
+		
+		
+		
+		   Map<Integer, Object> map;
+	        map = new HashMap<Integer, Object>();
+	        List<Map<String, Object>> lists = new ArrayList<>();
+	        for (Tuple t : admlvl) {
+	        	List<Map<String, Object>> list = new ArrayList<>();
+		        Map<String, Object> mapadmlvl = new HashMap<>();
+				for(int i=1;i<=8;i++) {
+					mapadmlvl.put(i+"",getKarar(t.get("post").toString(),aid,pid,oid,i,orgtype,did,munc,hfid));
+					
+				}
+				list.add(mapadmlvl);
+				Map<String, Object> maps = new HashMap<>();
+				maps.put("postname", t.get("postname"));
+				maps.put("sdarbandi", t.get("sdarbandi"));
+				maps.put("dworking", t.get("dworking"));
+				maps.put("kworking", t.get("kworking"));
+				maps.put("tworking", Integer.parseInt(t.get("kworking").toString())+Integer.parseInt(t.get("dworking").toString()));
+				maps.put("1", list.get(0).get("1").toString());
+				maps.put("8", list.get(0).get("8").toString());
+				maps.put("2", list.get(0).get("2").toString());
+				maps.put("3", list.get(0).get("3").toString());
+				maps.put("4", list.get(0).get("4").toString());
+				maps.put("5", list.get(0).get("5").toString());
+				maps.put("6", list.get(0).get("6").toString());
+				maps.put("7", list.get(0).get("7").toString());
+				lists.add(maps);
+			}
+	        
+	        return lists;
+	        
+//			for (Tuple t : admlvl) {
+//				List<Map<String, Object>> list = new ArrayList<>();
+//		        Map<String, Object> mapadmlvl = new HashMap<>();
+//				for(int i=1;i<=8;i++) {
+//					mapadmlvl.put(i+"",getKarar(t.get("post").toString(),aid,pid,oid,i,orgtype,did,munc,hfid));
+//					
+//				}
+//				list.add(mapadmlvl);
+				
+				
+				
+				
+			
+//				row = sheet.createRow(rowCount++);
+//
+//				int columnCount = 0;
+//				cell = row.createCell(columnCount++);
+//				cell.setCellValue(t.get("postname")+"");
+//				cell = row.createCell(columnCount++);
+//				cell.setCellValue(t.get("sdarbandi")+"");
+//				cell = row.createCell(columnCount++);
+//				cell.setCellValue(t.get("dworking")+"");
+//				cell = row.createCell(columnCount++);
+//				cell.setCellValue(t.get("kworking")+"");
+//				cell = row.createCell(columnCount++);
+//				cell.setCellValue(Integer.parseInt(t.get("dworking").toString())+Integer.parseInt(t.get("kworking").toString()));
+//				cell = row.createCell(columnCount++);
+//				cell.setCellValue(list.get(0).get("1").toString());
+//				cell = row.createCell(columnCount++);
+//				cell.setCellValue(list.get(0).get("8").toString());
+//				cell = row.createCell(columnCount++);
+//				cell.setCellValue(list.get(0).get("2").toString());
+//				cell = row.createCell(columnCount++);
+//				cell.setCellValue(list.get(0).get("3").toString());
+//				cell = row.createCell(columnCount++);
+//				cell.setCellValue(list.get(0).get("4").toString());
+//				cell = row.createCell(columnCount++);
+//				cell.setCellValue(list.get(0).get("5").toString());
+//				cell = row.createCell(columnCount++);
+//				cell.setCellValue(list.get(0).get("6").toString());
+//				cell = row.createCell(columnCount++);
+//				cell.setCellValue(list.get(0).get("7").toString());
+//				cell = row.createCell(columnCount++);
+//				
+//			}
+			
+		
+		
+		
+	}
+	
+	public List<Map<String, Object>> getpivotdata2(HttpServletRequest request) {
+		String orgtype=request("orgtype");
+		String aid=request("admid");
+		String pid=request("pid");
+		String did=request("did");
+		String munc=request("munc");
+		String oid=request("ofc");
+		String hfid=request("hfid");
+		String type=request("type");
+		
+		String filename = "healthworkforce.csv";
+		String sql="";
+		if(!type.equals("")) {
+		if(type.equals("5")) {
+			sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.orgtype=4  group by tbl_darbandi.post";
+		}else {
+			sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.orgtype=1 and  tbl_workforce.admlvl="+type+ "  group by tbl_darbandi.post";
+		}
+		}else {
+			sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,sum(dworking) as dworking,sum(kworking) as kworking,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id   group by tbl_darbandi.post";
+		}
+		
+		
+		
+		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList());
+		
+		
+		
+		
+		
+		
+		   Map<Integer, Object> map;
+	        map = new HashMap<Integer, Object>();
+	        List<Map<String, Object>> lists = new ArrayList<>();
+	        for (Tuple t : admlvl) {
+	        	List<Map<String, Object>> list = new ArrayList<>();
+		        Map<String, Object> mapadmlvl = new HashMap<>();
+				for(int i=1;i<=8;i++) {
+					mapadmlvl.put(i+"",getKararPivot(t.get("post").toString(),i,type));
+					
+				}
+				list.add(mapadmlvl);
+				Map<String, Object> maps = new HashMap<>();
+				maps.put("postname", t.get("postname"));
+				maps.put("sdarbandi", t.get("sdarbandi"));
+				maps.put("dworking", t.get("dworking"));
+				maps.put("kworking", t.get("kworking"));
+				maps.put("tworking", Integer.parseInt(t.get("kworking").toString())+Integer.parseInt(t.get("dworking").toString()));
+				maps.put("1", list.get(0).get("1").toString());
+				maps.put("8", list.get(0).get("8").toString());
+				maps.put("2", list.get(0).get("2").toString());
+				maps.put("3", list.get(0).get("3").toString());
+				maps.put("4", list.get(0).get("4").toString());
+				maps.put("5", list.get(0).get("5").toString());
+				maps.put("6", list.get(0).get("6").toString());
+				maps.put("7", list.get(0).get("7").toString());
+				lists.add(maps);
+			}
+	        
+	        return lists;
+	        
+
+			
+		
+		
+		
+	}
+	
+	private Object getKararPivot(String post, int i,String type) {
+		String sql="";
+		if(type.equals("")) {
+			  sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_darbandi.post= "+post+" and tbl_employee.emptype="+i;
+		}else {
+			if(type.equals("5")) {
+				  sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.orgtype=4 and tbl_darbandi.post= "+post+" and tbl_employee.emptype="+i;
+			}else {
+				  sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ " and tbl_darbandi.post= "+post+" and tbl_employee.emptype="+i;
+			}
+		}
+		
+		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList());
+		
+		return admlvl.get(0).get("karar");
+	}
+
+	private Object getKarar(String post, String aid, String pid, String oid,int emptype,String orgtype,String did,String munc,String hfid) {
+		String sql="";
+		if("1".equals(orgtype)) {
+			if(aid.equals("")) {
+				 sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.orgtype=1 and tbl_darbandi.post= "+post+" and tbl_employee.emptype="+emptype;
+			}
+			if(aid.equals("1")) {
+				if(oid.equals("0")) {
+					 sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.admlvl=1 and tbl_darbandi.post= "+post+" and tbl_employee.emptype="+emptype;
+				}else {
+					
+					 sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.admlvl=1 and  tbl_darbandi.post= "+post+" and tbl_workforce.officeid="+oid+" and tbl_employee.emptype="+emptype;
+				}
+			}
+			
+			if(aid.equals("2")) {
+				if(pid.equals("0")) {
+					sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.admlvl=2 and tbl_darbandi.post= "+post+" and tbl_employee.emptype="+emptype;
+				}else {
+					if(oid.equals("0")) {
+						sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" and tbl_darbandi.post= "+post+" and tbl_employee.emptype="+emptype;
+					}else {
+						sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.admlvl=2 and tbl_workforce.officeid="+oid+" and tbl_darbandi.post= "+post+" and tbl_employee.emptype="+emptype;
+					}
+				}
+			}
+			
+			
+			if(aid.equals("4")) {
+				if(pid.equals("0")) {
+					 sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.admlvl=4 and tbl_darbandi.post= "+post+" and tbl_employee.emptype="+emptype;
+				}else {
+					if(did.equals("0")) {
+						 sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.admlvl=4 and tbl_darbandi.post= "+post+" and tbl_workforce.provinceid="+pid+" and tbl_employee.emptype="+emptype;
+					}else {
+						if(munc.equals("0")) {
+							sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.admlvl=4 and tbl_darbandi.post= "+post+" and tbl_workforce.districtid="+did+" and tbl_employee.emptype="+emptype;
+						}else {
+							sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.admlvl=4 and tbl_darbandi.post= "+post+" and tbl_workforce.muncid="+munc+" and tbl_employee.emptype="+emptype;
+						}
+					}
+					 
+				}
+			}
+		}else {
+			if(pid.equals("0")) {
+				sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.orgtype=4 and tbl_darbandi.post= "+post+" and tbl_employee.emptype="+emptype;
+			}else {
+				if(did.equals("0")) {
+					sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+pid+" and tbl_darbandi.post= "+post+" and tbl_employee.emptype="+emptype;
+					
+				}else {
+					if(munc.equals("0")) {
+						sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+did+" and tbl_darbandi.post= "+post+" and tbl_employee.emptype="+emptype;
+					}else {
+						if(hfid.equals("0")) {
+							sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.orgtype=4 and tbl_workforce.palika="+munc+" and tbl_darbandi.post= "+post+" and tbl_employee.emptype="+emptype;
+						}else {
+							sql="select count(tbl_employee.id) as karar from tbl_employee join tbl_darbandi on tbl_darbandi.id=tbl_employee.darbandiid  join tbl_workforce on tbl_workforce.id=tbl_employee.workforceid where tbl_workforce.orgtype=4 and tbl_workforce.org="+hfid+" and tbl_darbandi.post= "+post+" and tbl_employee.emptype="+emptype;
+						}
+					}
+				}
+			}
+		}
+
+		
+		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList());
+		
+		return admlvl.get(0).get("karar");
+	}
+
+
 
 	public List<Tuple> gettabledata(HttpServletRequest request) {
 		String orgtype=request("orgtype");
@@ -340,158 +665,232 @@ public class ClientCreateTestService extends AutoService{
 		String filename = "healthworkforce.csv";
 		String sql="";
 		
-		if("1".equals(orgtype)) {
-			if(aid.equals("1")) {
-				if(oid.equals("0")) {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=1";				
-					Tuple t = db.getSingleResult(q1);
-					sql = "select tbl_office.namenp as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join tbl_office on tbl_office.id=tbl_workforce.officeid where tbl_workforce.admlvl=1 group by tbl_workforce.officeid";
-					
-//					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=1 group by tbl_darbandi.post";
-				}else {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+"";				
-					Tuple t = db.getSingleResult(q1);
-					sql = "select tbl_office.namenp as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join tbl_office on tbl_office.id=tbl_workforce.officeid where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+" ";
-//					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+" group by tbl_darbandi.post";
-				}
-			}else if(aid.equals("2")) {
-			if(pid.equals("0")) {
-				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2";				
-				Tuple t = db.getSingleResult(q1);
-				sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 group by tbl_workforce.provinceid";
-				}else {
-				if(oid.equals("0")) {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+"";				
-					Tuple t = db.getSingleResult(q1);
-					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+"";
-					
-					
-//					sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" group by tbl_darbandi.post";
-				}else {
-					
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" and  tbl_workforce.officeid="+oid+"";				
-					Tuple t = db.getSingleResult(q1);
-					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" and  tbl_workforce.officeid="+oid+"";
-//					sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.officeid="+oid+" group by tbl_darbandi.post";
-				}
-			}
-		}else {
-			if(pid.equals("0")) {
-				if(did.equals("0")) {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4";				
-					Tuple t = db.getSingleResult(q1);
-					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 group by tbl_workforce.muncid";
+		try {
 
+			if("1".equals(orgtype)) {
+				if(aid.equals("")) {
+					
+					if(pid.equals("200")) {
+						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=1";				
+						Tuple t = db.getSingleResult(q1);
+						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=1 group by tbl_workforce.palika";
+						
+//						sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.orgtype=4 group by tbl_darbandi.post ";
+					}else if(pid.equals("0")) {
+						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=1";				
+						Tuple t = db.getSingleResult(q1);
+						sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=1 group by tbl_workforce.provinceid";
+						
+					}else if(pid.equals("100")) {
+						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=1";				
+						Tuple t = db.getSingleResult(q1);
+						sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=1 group by tbl_workforce.districtid";
+						
+					}
+				}
+				else if(aid.equals("1")) {
+					if(oid.equals("0")) {
+						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=1";				
+						Tuple t = db.getSingleResult(q1);
+						sql = "select tbl_office.namenp as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join tbl_office on tbl_office.id=tbl_workforce.officeid where tbl_workforce.admlvl=1 group by tbl_workforce.officeid";
+						
+//						 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=1 group by tbl_darbandi.post";
+					}else {
+						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+"";				
+						Tuple t = db.getSingleResult(q1);
+						sql = "select tbl_office.namenp as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join tbl_office on tbl_office.id=tbl_workforce.officeid where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+" ";
+//						 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+" group by tbl_darbandi.post";
+					}
+				}else if(aid.equals("2")) {
+				if(pid.equals("0")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2";				
+					Tuple t = db.getSingleResult(q1);
+					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id  join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 group by tbl_workforce.provinceid";
+					}else if(pid.equals("100")) {
+						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2";				
+						Tuple t = db.getSingleResult(q1);
+						sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id  join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.admlvl=2 group by tbl_workforce.districtid";
+						
+					}else if(pid.equals("200")) {
+						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2";				
+						Tuple t = db.getSingleResult(q1);
+						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id  join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.admlvl=2 group by tbl_workforce.palika";
+						
+					}
+				else {
+					if(oid.equals("0")) {
+						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+"";				
+						Tuple t = db.getSingleResult(q1);
+						sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+"";
+						
+						
+//						sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" group by tbl_darbandi.post";
+					}else {
+						
+						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" and  tbl_workforce.officeid="+oid+"";				
+						Tuple t = db.getSingleResult(q1);
+						sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" and  tbl_workforce.officeid="+oid+"";
+//						sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.officeid="+oid+" group by tbl_darbandi.post";
+					}
+				}
+			}else {
+				if(pid.equals("200")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4";				
+					Tuple t = db.getSingleResult(q1);
+//					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=4 group by tbl_workforce.provinceid";
+					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4  group by tbl_workforce.muncid";
 //					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 group by tbl_darbandi.post";
+			
+				}else if(pid.equals("0")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4";				
+					Tuple t = db.getSingleResult(q1);
+//					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=4 group by tbl_workforce.provinceid";
+					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=4  group by tbl_workforce.provinceid";
+
+				}else if(pid.equals("100")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4";				
+					Tuple t = db.getSingleResult(q1);
+//					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=4 group by tbl_workforce.provinceid";
+					sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.admlvl=4  group by tbl_workforce.districtid";
+
+				}
+					
+//					if(did.equals("0")) {
+//						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4";				
+//						Tuple t = db.getSingleResult(q1);
+////						sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=4 group by tbl_workforce.provinceid";
+//						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4  group by tbl_workforce.muncid";
+////						 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 group by tbl_darbandi.post";
+//					}else {
+//						if(munc.equals("0")) {
+//							String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+"";				
+//							Tuple t = db.getSingleResult(q1);
+//							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.muncid";
+	//
+////							 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_darbandi.post";
+//						}else {
+//							String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";				
+//							Tuple t = db.getSingleResult(q1);
+//							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+" group by tbl_workforce.muncid";
+	//
+////							 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+" group by tbl_darbandi.post";
+//						}
+//					}
+//				
+				
+			else {
+				if(did.equals("0")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+"";				
+					Tuple t = db.getSingleResult(q1);
+					sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+" group by tbl_workforce.districtid";
+
+//					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+" group by tbl_darbandi.post";
 				}else {
 					if(munc.equals("0")) {
-						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+"";				
+						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+"";				
 						Tuple t = db.getSingleResult(q1);
-						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.muncid";
+						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.muncid";
 
 //						 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_darbandi.post";
 					}else {
-						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";				
+						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";				
 						Tuple t = db.getSingleResult(q1);
-						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+" group by tbl_workforce.muncid";
+						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";
 
+						
 //						 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+" group by tbl_darbandi.post";
 					}
-				}
-			
-			
-		}else {
-			if(did.equals("0")) {
-				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+"";				
-				Tuple t = db.getSingleResult(q1);
-				sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+" group by tbl_workforce.muncid";
-
-//				 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+" group by tbl_darbandi.post";
-			}else {
-				if(munc.equals("0")) {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+"";				
-					Tuple t = db.getSingleResult(q1);
-					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.muncid";
-
-//					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_darbandi.post";
-				}else {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";				
-					Tuple t = db.getSingleResult(q1);
-					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";
-
 					
-//					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+" group by tbl_darbandi.post";
 				}
+				
 				
 			}
-			
-			
 		}
-	}
-		}else {
-			if(pid.equals("0")) {
-				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4";				
-				Tuple t = db.getSingleResult(q1);
-				sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 group by tbl_workforce.org";
-				
-//				sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.orgtype=4 group by tbl_darbandi.post ";
 			}else {
-				if(did.equals("0")) {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+pid+"";				
+				if(pid.equals("200")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4";				
 					Tuple t = db.getSingleResult(q1);
-					sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+pid+" group by tbl_workforce.org";
+					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=4 group by tbl_workforce.palika";
 					
-				}else {
-					if(munc.equals("0")) {
-						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+did+"";				
+//					sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.orgtype=4 group by tbl_darbandi.post ";
+				}else if(pid.equals("0")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4";				
+					Tuple t = db.getSingleResult(q1);
+					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=4 group by tbl_workforce.provinceid";
+					
+				}else if(pid.equals("100")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4";				
+					Tuple t = db.getSingleResult(q1);
+					sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=4 group by tbl_workforce.districtid";
+					
+				}
+				else {
+					if(did.equals("0")) {
+						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+pid+"";				
 						Tuple t = db.getSingleResult(q1);
-						sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.org";
+						sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+pid+" group by tbl_workforce.districtid";
 						
 					}else {
-						if(hfid.equals("0")) {
-							String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.palika="+munc+"";				
+						if(munc.equals("0")) {
+							String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+did+"";				
 							Tuple t = db.getSingleResult(q1);
-							sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 and tbl_workforce.palika="+munc+" group by tbl_workforce.org";
+							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.palika";
 							
 						}else {
-							String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.org="+hfid+"";				
-							Tuple t = db.getSingleResult(q1);
-							sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 and tbl_workforce.org="+hfid+" group by tbl_workforce.org";
-							
+							if(hfid.equals("0")) {
+								String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.palika="+munc+"";				
+								Tuple t = db.getSingleResult(q1);
+								sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=4 and tbl_workforce.palika="+munc+" group by tbl_workforce.palika";
+								
+							}else {
+								String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.org="+hfid+"";				
+								Tuple t = db.getSingleResult(q1);
+								sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 and tbl_workforce.org="+hfid+" group by tbl_workforce.org";
+								
+							}
 						}
 					}
 				}
 			}
-		}
-		String sq2="select namenp,id from tbl_post order by level";
-		List<Tuple> posts = db.getResultList(sq2, Arrays.asList());
-		List<Map<String, Object>> lists = new ArrayList<>();
-		Map<String, Object> mappost = new HashMap<>();
-		for (Tuple t : posts) {	
-			mappost.put(t.get("id").toString(), t.get("namenp"));
-		}
-//		Map<String, Object> data= (Map<String, Object>) db.getResultList(sql, Arrays.asList());
-		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList());
-//		System.out.println(admlvl.get(0).toString());
-		List<TupleElement<?>> ltpe;
-		List<String> flds = new ArrayList<>();
-		if(!admlvl.isEmpty()) {
-		 ltpe = admlvl.get(0).getElements();
-		 
-			for(TupleElement tp : ltpe) {
-				if(tp.getAlias().startsWith("d")) {
-					flds.add(tp.getAlias().substring(1));
-				}
+			
+			String sq2="select namenp,id from tbl_post order by level";
+			List<Tuple> posts = db.getResultList(sq2, Arrays.asList());
+			List<Map<String, Object>> lists = new ArrayList<>();
+			Map<String, Object> mappost = new HashMap<>();
+			for (Tuple t : posts) {	
+				mappost.put(t.get("id").toString(), t.get("namenp"));
 			}
-		}else {
-			ltpe=null;
-//			flds=null;
+
+			List<Tuple> admlvl = db.getResultList(sql, Arrays.asList());
+//			System.out.println(admlvl);
+			List<TupleElement<?>> ltpe;
+			List<String> flds = new ArrayList<>();
+			if(admlvl==null) {
+				return null;
+			}
+			
+			if(!admlvl.isEmpty()) {
+			 ltpe = admlvl.get(0).getElements();
+			 
+				for(TupleElement tp : ltpe) {
+					if(tp.getAlias().startsWith("d")) {
+						flds.add(tp.getAlias().substring(1));
+					}
+				}
+			}else {
+				ltpe=null;
+			
+			}
+		
+			
+				return admlvl;
+		
+			
+		} catch (Exception e) {
+			return null;
 		}
 		
-//		System.out.println(flds);
 		
-			return admlvl;
-	
 		
 		
 	}
@@ -506,84 +905,136 @@ public class ClientCreateTestService extends AutoService{
 		String hfid=request("hfid");
 		String filename = "healthworkforce.csv";
 		String sql="";
+		
 		if("1".equals(orgtype)) {
-			if(aid.equals("1")) {
-				if(oid.equals("0")) {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=1";				
+			if(aid.equals("")) {
+				
+				if(pid.equals("200")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=1";				
 					Tuple t = db.getSingleResult(q1);
-					sql = "select tbl_office.namenp as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join tbl_office on tbl_office.id=tbl_workforce.officeid where tbl_workforce.admlvl=1 group by tbl_workforce.officeid";
+					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=1 group by tbl_workforce.palika";
+					
+//					sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.orgtype=4 group by tbl_darbandi.post ";
+				}else if(pid.equals("0")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=1";				
+					Tuple t = db.getSingleResult(q1);
+					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=1 group by tbl_workforce.provinceid";
+					
+				}else if(pid.equals("100")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=1";				
+					Tuple t = db.getSingleResult(q1);
+					sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=1 group by tbl_workforce.districtid";
+					
+				}
+			}
+			else if(aid.equals("1")) {
+				if(oid.equals("0")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=1";				
+					Tuple t = db.getSingleResult(q1);
+					sql = "select tbl_office.namenp as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join tbl_office on tbl_office.id=tbl_workforce.officeid where tbl_workforce.admlvl=1 group by tbl_workforce.officeid";
 					
 //					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=1 group by tbl_darbandi.post";
 				}else {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+"";				
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+"";				
 					Tuple t = db.getSingleResult(q1);
-					sql = "select tbl_office.namenp as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join tbl_office on tbl_office.id=tbl_workforce.officeid where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+" ";
+					sql = "select tbl_office.namenp as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join tbl_office on tbl_office.id=tbl_workforce.officeid where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+" ";
 //					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+" group by tbl_darbandi.post";
 				}
 			}else if(aid.equals("2")) {
 			if(pid.equals("0")) {
-				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2";				
+				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2";				
 				Tuple t = db.getSingleResult(q1);
-				sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 group by tbl_workforce.provinceid";
-				}else {
-				if(oid.equals("0")) {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+"";				
+				sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id  join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 group by tbl_workforce.provinceid";
+				}else if(pid.equals("100")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2";				
 					Tuple t = db.getSingleResult(q1);
-					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+"";
+					sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id  join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.admlvl=2 group by tbl_workforce.districtid";
+					
+				}else if(pid.equals("200")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2";				
+					Tuple t = db.getSingleResult(q1);
+					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id  join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.admlvl=2 group by tbl_workforce.palika";
+					
+				}
+			else {
+				if(oid.equals("0")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+"";				
+					Tuple t = db.getSingleResult(q1);
+					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+"";
 					
 					
 //					sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" group by tbl_darbandi.post";
 				}else {
 					
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" and  tbl_workforce.officeid="+oid+"";				
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" and  tbl_workforce.officeid="+oid+"";				
 					Tuple t = db.getSingleResult(q1);
-					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" and  tbl_workforce.officeid="+oid+"";
+					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" and  tbl_workforce.officeid="+oid+"";
 //					sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.officeid="+oid+" group by tbl_darbandi.post";
 				}
 			}
 		}else {
-			if(pid.equals("0")) {
-				if(did.equals("0")) {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4";				
-					Tuple t = db.getSingleResult(q1);
-					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 group by tbl_workforce.muncid";
-
-//					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 group by tbl_darbandi.post";
-				}else {
-					if(munc.equals("0")) {
-						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+"";				
-						Tuple t = db.getSingleResult(q1);
-						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.muncid";
-
-//						 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_darbandi.post";
-					}else {
-						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";				
-						Tuple t = db.getSingleResult(q1);
-						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+" group by tbl_workforce.muncid";
-
-//						 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+" group by tbl_darbandi.post";
-					}
-				}
-			
-			
-		}else {
-			if(did.equals("0")) {
-				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+"";				
+			if(pid.equals("200")) {
+				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4";				
 				Tuple t = db.getSingleResult(q1);
-				sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+" group by tbl_workforce.muncid";
+//				sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=4 group by tbl_workforce.provinceid";
+				sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4  group by tbl_workforce.muncid";
+//				 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 group by tbl_darbandi.post";
+		
+			}else if(pid.equals("0")) {
+				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4";				
+				Tuple t = db.getSingleResult(q1);
+//				sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=4 group by tbl_workforce.provinceid";
+				sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=4  group by tbl_workforce.provinceid";
+
+			}else if(pid.equals("100")) {
+				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4";				
+				Tuple t = db.getSingleResult(q1);
+//				sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=4 group by tbl_workforce.provinceid";
+				sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.admlvl=4  group by tbl_workforce.districtid";
+
+			}
+				
+//				if(did.equals("0")) {
+//					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4";				
+//					Tuple t = db.getSingleResult(q1);
+////					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=4 group by tbl_workforce.provinceid";
+//					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4  group by tbl_workforce.muncid";
+////					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 group by tbl_darbandi.post";
+//				}else {
+//					if(munc.equals("0")) {
+//						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+"";				
+//						Tuple t = db.getSingleResult(q1);
+//						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.muncid";
+//
+////						 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_darbandi.post";
+//					}else {
+//						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";				
+//						Tuple t = db.getSingleResult(q1);
+//						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+" group by tbl_workforce.muncid";
+//
+////						 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+" group by tbl_darbandi.post";
+//					}
+//				}
+//			
+			
+		else {
+			if(did.equals("0")) {
+				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+"";				
+				Tuple t = db.getSingleResult(q1);
+				sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+" group by tbl_workforce.districtid";
 
 //				 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+" group by tbl_darbandi.post";
 			}else {
 				if(munc.equals("0")) {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+"";				
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+"";				
 					Tuple t = db.getSingleResult(q1);
-					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.muncid";
+					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.muncid";
 
 //					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_darbandi.post";
 				}else {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";				
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";				
 					Tuple t = db.getSingleResult(q1);
-					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";
+					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";
 
 					
 //					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+" group by tbl_darbandi.post";
@@ -595,41 +1046,51 @@ public class ClientCreateTestService extends AutoService{
 		}
 	}
 		}else {
-			if(pid.equals("0")) {
-				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4";				
+			if(pid.equals("200")) {
+				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4";				
 				Tuple t = db.getSingleResult(q1);
-				sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 group by tbl_workforce.org";
+				sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=4 group by tbl_workforce.palika";
 				
 //				sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.orgtype=4 group by tbl_darbandi.post ";
-			}else {
+			}else if(pid.equals("0")) {
+				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4";				
+				Tuple t = db.getSingleResult(q1);
+				sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=4 group by tbl_workforce.provinceid";
+				
+			}else if(pid.equals("100")) {
+				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4";				
+				Tuple t = db.getSingleResult(q1);
+				sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=4 group by tbl_workforce.districtid";
+				
+			}
+			else {
 				if(did.equals("0")) {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+pid+"";				
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+pid+"";				
 					Tuple t = db.getSingleResult(q1);
-					sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+pid+" group by tbl_workforce.org";
+					sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+pid+" group by tbl_workforce.districtid";
 					
 				}else {
 					if(munc.equals("0")) {
-						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+did+"";				
+						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+did+"";				
 						Tuple t = db.getSingleResult(q1);
-						sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.org";
+						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.palika";
 						
 					}else {
 						if(hfid.equals("0")) {
-							String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.palika="+munc+"";				
+							String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.palika="+munc+"";				
 							Tuple t = db.getSingleResult(q1);
-							sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 and tbl_workforce.palika="+munc+" group by tbl_workforce.org";
+							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=4 and tbl_workforce.palika="+munc+" group by tbl_workforce.palika";
 							
 						}else {
-							String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.org="+hfid+"";				
+							String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.org="+hfid+"";				
 							Tuple t = db.getSingleResult(q1);
-							sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 and tbl_workforce.org="+hfid+" group by tbl_workforce.org";
+							sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 and tbl_workforce.org="+hfid+" group by tbl_workforce.org";
 							
 						}
 					}
 				}
 			}
 		}
-
 		String sq2="select namenp,id from tbl_post order by level";
 		List<Tuple> posts = db.getResultList(sq2, Arrays.asList());
 		List<Map<String, Object>> lists = new ArrayList<>();
@@ -642,6 +1103,9 @@ public class ClientCreateTestService extends AutoService{
 //		System.out.println(admlvl.get(0).toString());
 		List<TupleElement<?>> ltpe;
 		List<String> flds = new ArrayList<>();
+		if(admlvl==null) {
+			return null;
+		}
 		if(!admlvl.isEmpty()) {
 		 ltpe = admlvl.get(0).getElements();
 		 
@@ -668,84 +1132,136 @@ public class ClientCreateTestService extends AutoService{
 		String filename = "healthworkforce.csv";
 		String sql="";
 		
+
 		if("1".equals(orgtype)) {
-			if(aid.equals("1")) {
-				if(oid.equals("0")) {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=1";				
+			if(aid.equals("")) {
+				
+				if(pid.equals("200")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=1";				
 					Tuple t = db.getSingleResult(q1);
-					sql = "select tbl_office.namenp as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join tbl_office on tbl_office.id=tbl_workforce.officeid where tbl_workforce.admlvl=1 group by tbl_workforce.officeid";
+					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=1 group by tbl_workforce.palika";
+					
+//					sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.orgtype=4 group by tbl_darbandi.post ";
+				}else if(pid.equals("0")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=1";				
+					Tuple t = db.getSingleResult(q1);
+					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=1 group by tbl_workforce.provinceid";
+					
+				}else if(pid.equals("100")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=1";				
+					Tuple t = db.getSingleResult(q1);
+					sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=1 group by tbl_workforce.districtid";
+					
+				}
+			}
+			else if(aid.equals("1")) {
+				if(oid.equals("0")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=1";				
+					Tuple t = db.getSingleResult(q1);
+					sql = "select tbl_office.namenp as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join tbl_office on tbl_office.id=tbl_workforce.officeid where tbl_workforce.admlvl=1 group by tbl_workforce.officeid";
 					
 //					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=1 group by tbl_darbandi.post";
 				}else {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+"";				
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+"";				
 					Tuple t = db.getSingleResult(q1);
-					sql = "select tbl_office.namenp as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join tbl_office on tbl_office.id=tbl_workforce.officeid where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+" ";
+					sql = "select tbl_office.namenp as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join tbl_office on tbl_office.id=tbl_workforce.officeid where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+" ";
 //					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=1 and tbl_workforce.officeid="+oid+" group by tbl_darbandi.post";
 				}
 			}else if(aid.equals("2")) {
 			if(pid.equals("0")) {
-				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2";				
+				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2";				
 				Tuple t = db.getSingleResult(q1);
-				sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 group by tbl_workforce.provinceid";
-				}else {
-				if(oid.equals("0")) {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+"";				
+				sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id  join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 group by tbl_workforce.provinceid";
+				}else if(pid.equals("100")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2";				
 					Tuple t = db.getSingleResult(q1);
-					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+"";
+					sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id  join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.admlvl=2 group by tbl_workforce.districtid";
+					
+				}else if(pid.equals("200")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2";				
+					Tuple t = db.getSingleResult(q1);
+					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id  join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.admlvl=2 group by tbl_workforce.palika";
+					
+				}
+			else {
+				if(oid.equals("0")) {
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+"";				
+					Tuple t = db.getSingleResult(q1);
+					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+"";
 					
 					
 //					sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" group by tbl_darbandi.post";
 				}else {
 					
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" and  tbl_workforce.officeid="+oid+"";				
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" and  tbl_workforce.officeid="+oid+"";				
 					Tuple t = db.getSingleResult(q1);
-					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" and  tbl_workforce.officeid="+oid+"";
+					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=2 and tbl_workforce.provinceid="+pid+" and  tbl_workforce.officeid="+oid+"";
 //					sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=2 and tbl_workforce.officeid="+oid+" group by tbl_darbandi.post";
 				}
 			}
 		}else {
-			if(pid.equals("0")) {
-				if(did.equals("0")) {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4";				
-					Tuple t = db.getSingleResult(q1);
-					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 group by tbl_workforce.muncid";
-
-//					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 group by tbl_darbandi.post";
-				}else {
-					if(munc.equals("0")) {
-						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+"";				
-						Tuple t = db.getSingleResult(q1);
-						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.muncid";
-
-//						 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_darbandi.post";
-					}else {
-						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";				
-						Tuple t = db.getSingleResult(q1);
-						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+" group by tbl_workforce.muncid";
-
-//						 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+" group by tbl_darbandi.post";
-					}
-				}
-			
-			
-		}else {
-			if(did.equals("0")) {
-				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+"";				
+			if(pid.equals("200")) {
+				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4";				
 				Tuple t = db.getSingleResult(q1);
-				sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+" group by tbl_workforce.muncid";
+//				sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=4 group by tbl_workforce.provinceid";
+				sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4  group by tbl_workforce.muncid";
+//				 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 group by tbl_darbandi.post";
+		
+			}else if(pid.equals("0")) {
+				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4";				
+				Tuple t = db.getSingleResult(q1);
+//				sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=4 group by tbl_workforce.provinceid";
+				sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=4  group by tbl_workforce.provinceid";
+
+			}else if(pid.equals("100")) {
+				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4";				
+				Tuple t = db.getSingleResult(q1);
+//				sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=4 group by tbl_workforce.provinceid";
+				sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.admlvl=4  group by tbl_workforce.districtid";
+
+			}
+				
+//				if(did.equals("0")) {
+//					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4";				
+//					Tuple t = db.getSingleResult(q1);
+////					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.admlvl=4 group by tbl_workforce.provinceid";
+//					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4  group by tbl_workforce.muncid";
+////					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 group by tbl_darbandi.post";
+//				}else {
+//					if(munc.equals("0")) {
+//						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+"";				
+//						Tuple t = db.getSingleResult(q1);
+//						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.muncid";
+//
+////						 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_darbandi.post";
+//					}else {
+//						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";				
+//						Tuple t = db.getSingleResult(q1);
+//						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+" group by tbl_workforce.muncid";
+//
+////						 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+" group by tbl_darbandi.post";
+//					}
+//				}
+//			
+			
+		else {
+			if(did.equals("0")) {
+				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+"";				
+				Tuple t = db.getSingleResult(q1);
+				sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+" group by tbl_workforce.districtid";
 
 //				 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.provinceid="+pid+" group by tbl_darbandi.post";
 			}else {
 				if(munc.equals("0")) {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+"";				
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+"";				
 					Tuple t = db.getSingleResult(q1);
-					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.muncid";
+					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.muncid";
 
 //					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.districtid="+did+" group by tbl_darbandi.post";
 				}else {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";				
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";				
 					Tuple t = db.getSingleResult(q1);
-					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";
+					sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.muncid where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+"";
 
 					
 //					 sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.admlvl=4 and tbl_workforce.muncid="+munc+" group by tbl_darbandi.post";
@@ -757,41 +1273,51 @@ public class ClientCreateTestService extends AutoService{
 		}
 	}
 		}else {
-			if(pid.equals("0")) {
-				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4";				
+			if(pid.equals("200")) {
+				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4";				
 				Tuple t = db.getSingleResult(q1);
-				sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 group by tbl_workforce.org";
+				sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=4 group by tbl_workforce.palika";
 				
 //				sql="select sum(post_no) as sdarbandi,sum(post_no_karar) as kdarbandi,post,tbl_post.namenp as postname from tbl_darbandi join tbl_post on tbl_post.id=tbl_darbandi.post join tbl_workforce on tbl_workforce.id=tbl_darbandi.workforce_id where tbl_workforce.orgtype=4 group by tbl_darbandi.post ";
-			}else {
+			}else if(pid.equals("0")) {
+				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4";				
+				Tuple t = db.getSingleResult(q1);
+				sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=4 group by tbl_workforce.provinceid";
+				
+			}else if(pid.equals("100")) {
+				String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4";				
+				Tuple t = db.getSingleResult(q1);
+				sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=4 group by tbl_workforce.districtid";
+				
+			}
+			else {
 				if(did.equals("0")) {
-					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+pid+"";				
+					String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+pid+"";				
 					Tuple t = db.getSingleResult(q1);
-					sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+pid+" group by tbl_workforce.org";
+					sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+pid+" group by tbl_workforce.districtid";
 					
 				}else {
 					if(munc.equals("0")) {
-						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+did+"";				
+						String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+did+"";				
 						Tuple t = db.getSingleResult(q1);
-						sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.org";
+						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+did+" group by tbl_workforce.palika";
 						
 					}else {
 						if(hfid.equals("0")) {
-							String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.palika="+munc+"";				
+							String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.palika="+munc+"";				
 							Tuple t = db.getSingleResult(q1);
-							sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 and tbl_workforce.palika="+munc+" group by tbl_workforce.org";
+							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=4 and tbl_workforce.palika="+munc+" group by tbl_workforce.palika";
 							
 						}else {
-							String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.org="+hfid+"";				
+							String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id where tbl_workforce.orgtype=4 and tbl_workforce.org="+hfid+"";				
 							Tuple t = db.getSingleResult(q1);
-							sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 and tbl_workforce.org="+hfid+" group by tbl_workforce.org";
+							sql = "select hfregistry.hf_name as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join hfregistry on hfregistry.id=tbl_workforce.org where tbl_workforce.orgtype=4 and tbl_workforce.org="+hfid+" group by tbl_workforce.org";
 							
 						}
 					}
 				}
 			}
 		}
-
 		String sq2="select namenp,id from tbl_post order by level";
 		List<Tuple> posts = db.getResultList(sq2, Arrays.asList());
 		List<Map<String, Object>> lists = new ArrayList<>();
@@ -804,6 +1330,137 @@ public class ClientCreateTestService extends AutoService{
 //		System.out.println(admlvl.get(0).toString());
 		List<TupleElement<?>> ltpe;
 		List<String> flds = new ArrayList<>();
+//		if(!admlvl.isEmpty()) {
+//		 ltpe = admlvl.get(0).getElements();
+//		 
+//			for(TupleElement tp : ltpe) {
+//				if(tp.getAlias().startsWith("d")) {
+//					flds.add(tp.getAlias().substring(1));
+//				}
+//			}
+//		}else {
+//			ltpe=null;
+////			flds=null;
+//		}
+//		System.out.println(mappost);
+		return mappost;
+	}
+
+	public List<Tuple> getpivotdata(HttpServletRequest request) {
+		String filter=request("filter");
+		String type=request("type");
+		String sql="";
+		
+		String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id ";				
+		Tuple t = db.getSingleResult(q1);
+		if(request("row").equals("province") && request("column").equals("post")) {
+			if(filter.equals("") && type.equals("")) {
+			
+			sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid  group by tbl_workforce.provinceid";
+			}else {
+				if(!filter.equals("") && !type.equals("")) {
+					if(type.equals("5")) {
+						sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+filter+ "  group by tbl_workforce.provinceid";
+					}else {
+						sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ " and tbl_workforce.provinceid="+filter+ "  group by tbl_workforce.provinceid";
+					}
+					
+					
+				}
+				
+				if(filter.equals("") && !type.equals("")) {
+					if(type.equals("5")) {
+						sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=4   group by tbl_workforce.provinceid";
+					}else {
+						sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ "  group by tbl_workforce.provinceid";
+					}				
+					
+				}
+				if(!filter.equals("") && type.equals("")) {
+					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where  tbl_workforce.provinceid="+filter+ "  group by tbl_workforce.provinceid";			
+					
+				}
+			}
+		}
+		if(request("row").equals("district") && request("column").equals("post")) {
+			if(filter.equals("") && type.equals("")) {
+				sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid  group by tbl_workforce.districtid";
+				
+				}else {
+					if(!filter.equals("") && !type.equals("")) {
+						if(type.equals("5")) {
+							sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+filter+ "  group by tbl_workforce.districtid";
+						}else {
+							sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ " and tbl_workforce.districtid="+filter+ "  group by tbl_workforce.districtid";
+						}
+						
+						
+					}
+					
+					if(filter.equals("") && !type.equals("")) {
+						if(type.equals("5")) {
+							sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=4   group by tbl_workforce.districtid";
+						}else {
+							sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ "   group by tbl_workforce.districtid";
+						}				
+						
+					}
+					if(!filter.equals("") && type.equals("")) {
+						sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.districtid="+filter+ "  group by tbl_workforce.districtid";			
+						
+					}
+				}
+			
+			
+			
+		}
+		if(request("row").equals("palika") && request("column").equals("post")) {
+			if(filter.equals("") && type.equals("")) {
+				sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika  group by tbl_workforce.palika";
+				
+				}else {
+					if(!filter.equals("") && !type.equals("")) {
+						if(type.equals("5")) {
+							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=4 and tbl_workforce.palika="+filter+ "  group by tbl_workforce.palika";
+						}else {
+							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika  where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ " and tbl_workforce.palika="+filter+ "   group by tbl_workforce.palika";
+						}				
+						
+					}
+					
+					if(filter.equals("") && !type.equals("")) {
+						if(type.equals("5")) {
+							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=4   group by tbl_workforce.palika";
+						}else {
+							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika  where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ "  group by tbl_workforce.palika";
+						}				
+						
+					}
+					if(!filter.equals("") && type.equals("")) {
+						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where  tbl_workforce.palika="+filter+ "  group by tbl_workforce.palika";			
+						
+					}
+				}
+			
+			
+			
+		}
+		String sq2="select namenp,id from tbl_post order by level";
+		List<Tuple> posts = db.getResultList(sq2, Arrays.asList());
+		List<Map<String, Object>> lists = new ArrayList<>();
+		Map<String, Object> mappost = new HashMap<>();
+		for (Tuple tt : posts) {	
+			mappost.put(tt.get("id").toString(), tt.get("namenp"));
+		}
+
+		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList());
+//		System.out.println(admlvl);
+		List<TupleElement<?>> ltpe;
+		List<String> flds = new ArrayList<>();
+		if(admlvl==null) {
+			return null;
+		}
+		
 		if(!admlvl.isEmpty()) {
 		 ltpe = admlvl.get(0).getElements();
 		 
@@ -814,9 +1471,253 @@ public class ClientCreateTestService extends AutoService{
 			}
 		}else {
 			ltpe=null;
-//			flds=null;
+		
 		}
-//		System.out.println(mappost);
+	
+		
+			return admlvl;
+		
+	}
+
+	public List<String> getpivotField(HttpServletRequest request) {
+		String filter=request("filter");
+		String type=request("type");
+		String sql="";
+		
+		String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id ";				
+		Tuple t = db.getSingleResult(q1);
+		if(request("row").equals("province") && request("column").equals("post")) {
+			if(filter.equals("") && type.equals("")) {
+			
+			sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid  group by tbl_workforce.provinceid";
+			}else {
+				if(!filter.equals("") && !type.equals("")) {
+					if(type.equals("5")) {
+						sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+filter+ "  group by tbl_workforce.provinceid";
+					}else {
+						sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ " and tbl_workforce.provinceid="+filter+ "  group by tbl_workforce.provinceid";
+					}
+					
+					
+				}
+				
+				if(filter.equals("") && !type.equals("")) {
+					if(type.equals("5")) {
+						sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=4   group by tbl_workforce.provinceid";
+					}else {
+						sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ "  group by tbl_workforce.provinceid";
+					}				
+					
+				}
+				if(!filter.equals("") && type.equals("")) {
+					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where  tbl_workforce.provinceid="+filter+ "  group by tbl_workforce.provinceid";			
+					
+				}
+			}
+		}
+		if(request("row").equals("district") && request("column").equals("post")) {
+			if(filter.equals("") && type.equals("")) {
+				sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid  group by tbl_workforce.districtid";
+				
+				}else {
+					if(!filter.equals("") && !type.equals("")) {
+						if(type.equals("5")) {
+							sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+filter+ "  group by tbl_workforce.districtid";
+						}else {
+							sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ " and tbl_workforce.districtid="+filter+ "  group by tbl_workforce.districtid";
+						}
+						
+						
+					}
+					
+					if(filter.equals("") && !type.equals("")) {
+						if(type.equals("5")) {
+							sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=4   group by tbl_workforce.districtid";
+						}else {
+							sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ "   group by tbl_workforce.districtid";
+						}				
+						
+					}
+					if(!filter.equals("") && type.equals("")) {
+						sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.districtid="+filter+ "  group by tbl_workforce.districtid";			
+						
+					}
+				}
+			
+			
+			
+		}
+		if(request("row").equals("palika") && request("column").equals("post")) {
+			if(filter.equals("") && type.equals("")) {
+				sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika  group by tbl_workforce.palika";
+				
+				}else {
+					if(!filter.equals("") && !type.equals("")) {
+						if(type.equals("5")) {
+							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=4 and tbl_workforce.palika="+filter+ "  group by tbl_workforce.palika";
+						}else {
+							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika  where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ " and tbl_workforce.palika="+filter+ "   group by tbl_workforce.palika";
+						}				
+						
+					}
+					
+					if(filter.equals("") && !type.equals("")) {
+						if(type.equals("5")) {
+							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=4   group by tbl_workforce.palika";
+						}else {
+							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika  where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ "  group by tbl_workforce.palika";
+						}				
+						
+					}
+					if(!filter.equals("") && type.equals("")) {
+						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where  tbl_workforce.palika="+filter+ "  group by tbl_workforce.palika";			
+						
+					}
+				}
+			
+			
+			
+		}
+		String sq2="select namenp,id from tbl_post order by level";
+		List<Tuple> posts = db.getResultList(sq2, Arrays.asList());
+		List<Map<String, Object>> lists = new ArrayList<>();
+		Map<String, Object> mappost = new HashMap<>();
+		for (Tuple tt : posts) {	
+			mappost.put(tt.get("id").toString(), tt.get("namenp"));
+		}
+
+		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList());
+		List<TupleElement<?>> ltpe;
+		List<String> flds = new ArrayList<>();
+		if(admlvl==null) {
+			return null;
+		}
+		if(!admlvl.isEmpty()) {
+		 ltpe = admlvl.get(0).getElements();
+		 
+			for(TupleElement tp : ltpe) {
+				if(tp.getAlias().startsWith("d")) {
+					flds.add(tp.getAlias().substring(1));
+				}
+			}
+		}else {
+			ltpe=null;
+		}
+		return flds;
+	}
+
+	public Map<String, Object> getpivotPost(HttpServletRequest request) {
+		String filter=request("filter");
+		String type=request("type");
+		String sql="";
+		
+		String q1="SELECT GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no else 0 end) AS ',CONCAT('''d',tp.id,'''') ) ORDER BY tp.id) AS `dcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then post_no_karar else 0 end) AS ',CONCAT('''k',tp.id,'''') ) ORDER BY tp.id) AS `kcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then dworking else 0 end) AS ',CONCAT('''w',tp.id,'''') ) ORDER BY tp.id) AS `wcases`,GROUP_CONCAT(DISTINCT CONCAT('sum(case when tbd.post = ''',tp.id,''' then kworking else 0 end) AS ',CONCAT('''n',tp.id,'''') ) ORDER BY tp.id) AS `ncases` FROM `tbl_post` tp JOIN tbl_darbandi td ON td.post=tp.id join tbl_workforce on tbl_workforce.id=td.workforce_id ";				
+		Tuple t = db.getSingleResult(q1);
+		if(request("row").equals("province") && request("column").equals("post")) {
+			if(filter.equals("") && type.equals("")) {
+			
+			sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid  group by tbl_workforce.provinceid";
+			}else {
+				if(!filter.equals("") && !type.equals("")) {
+					if(type.equals("5")) {
+						sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=4 and tbl_workforce.provinceid="+filter+ "  group by tbl_workforce.provinceid";
+					}else {
+						sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ " and tbl_workforce.provinceid="+filter+ "  group by tbl_workforce.provinceid";
+					}
+					
+					
+				}
+				
+				if(filter.equals("") && !type.equals("")) {
+					if(type.equals("5")) {
+						sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=4   group by tbl_workforce.provinceid";
+					}else {
+						sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ "  group by tbl_workforce.provinceid";
+					}				
+					
+				}
+				if(!filter.equals("") && type.equals("")) {
+					sql = "select admin_province.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_province on admin_province.pid=tbl_workforce.provinceid where  tbl_workforce.provinceid="+filter+ "  group by tbl_workforce.provinceid";			
+					
+				}
+			}
+		}
+		if(request("row").equals("district") && request("column").equals("post")) {
+			if(filter.equals("") && type.equals("")) {
+				sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid  group by tbl_workforce.districtid";
+				
+				}else {
+					if(!filter.equals("") && !type.equals("")) {
+						if(type.equals("5")) {
+							sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=4 and tbl_workforce.districtid="+filter+ "  group by tbl_workforce.districtid";
+						}else {
+							sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ " and tbl_workforce.districtid="+filter+ "  group by tbl_workforce.districtid";
+						}
+						
+						
+					}
+					
+					if(filter.equals("") && !type.equals("")) {
+						if(type.equals("5")) {
+							sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=4   group by tbl_workforce.districtid";
+						}else {
+							sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ "   group by tbl_workforce.districtid";
+						}				
+						
+					}
+					if(!filter.equals("") && type.equals("")) {
+						sql = "select admin_district.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_district on admin_district.districtid=tbl_workforce.districtid where tbl_workforce.districtid="+filter+ "  group by tbl_workforce.districtid";			
+						
+					}
+				}
+			
+			
+			
+		}
+		if(request("row").equals("palika") && request("column").equals("post")) {
+			if(filter.equals("") && type.equals("")) {
+				sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika  group by tbl_workforce.palika";
+				
+				}else {
+					if(!filter.equals("") && !type.equals("")) {
+						if(type.equals("5")) {
+							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=4 and tbl_workforce.palika="+filter+ "  group by tbl_workforce.palika";
+						}else {
+							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika  where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ " and tbl_workforce.palika="+filter+ "   group by tbl_workforce.palika";
+						}				
+						
+					}
+					
+					if(filter.equals("") && !type.equals("")) {
+						if(type.equals("5")) {
+							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where tbl_workforce.orgtype=4   group by tbl_workforce.palika";
+						}else {
+							sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika  where tbl_workforce.orgtype=1 and tbl_workforce.admlvl="+type+ "  group by tbl_workforce.palika";
+						}				
+						
+					}
+					if(!filter.equals("") && type.equals("")) {
+						sql = "select admin_local_level_structure.nameen as provincename,"+t.get("dcases")+","+t.get("kcases")+","+t.get("wcases")+","+t.get("ncases")+" "+"from tbl_darbandi tbd join tbl_post on tbl_post.id=tbd.post join tbl_workforce on tbl_workforce.id=tbd.workforce_id join admin_local_level_structure on admin_local_level_structure.vcid=tbl_workforce.palika where  tbl_workforce.palika="+filter+ "  group by tbl_workforce.palika";			
+						
+					}
+				}
+			
+			
+			
+		}
+		String sq2="select namenp,id from tbl_post order by level";
+		List<Tuple> posts = db.getResultList(sq2, Arrays.asList());
+		List<Map<String, Object>> lists = new ArrayList<>();
+		Map<String, Object> mappost = new HashMap<>();
+		for (Tuple tt : posts) {	
+			mappost.put(tt.get("id").toString(), tt.get("namenp"));
+		}
+
+		List<Tuple> admlvl = db.getResultList(sql, Arrays.asList());
+		List<TupleElement<?>> ltpe;
+		List<String> flds = new ArrayList<>();
+
 		return mappost;
+		
 	}
 }
